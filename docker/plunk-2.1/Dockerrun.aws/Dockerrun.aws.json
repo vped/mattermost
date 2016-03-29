@@ -1,0 +1,17 @@
+{
+	"AWSEBDockerrunVersion": "1",
+	"Authentication": {
+		"Bucket": "elasticbeanstalk-us-west-2-689203532673-dockercfg",
+		"Key": "config.json"
+	},
+	"Image": {
+		"Name": "plunk/plunk:2.1",
+		"Update": "true"
+	},
+	"Ports": [
+		{
+			"ContainerPort": "80"
+		}
+	],
+	"Logging": "/var/log/"
+}
