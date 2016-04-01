@@ -53,6 +53,10 @@ class SystemAnalytics extends React.Component {
         AsyncClient.getPostsPerDayAnalytics();
         AsyncClient.getUsersPerDayAnalytics();
         AsyncClient.getTotalUsersByEmailDomainAnalytics();
+        AsyncClient.getTotalChannelsByEmailDomainAnalytics();
+        AsyncClient.getTotalUsersPerChannelAnalytics();
+        AsyncClient.getTotalPostsPerChannelAnalytics();
+        AsyncClient.getTotalFilesPerChannelAnalytics();
 
         if (global.window.mm_license.IsLicensed === 'true') {
             AsyncClient.getAdvancedAnalytics();
@@ -159,7 +163,11 @@ class SystemAnalytics extends React.Component {
 
         const postCountsDay = formatPostsPerDayData(stats[StatTypes.POST_PER_DAY]);
         const userCountsWithPostsDay = formatUsersWithPostsPerDayData(stats[StatTypes.USERS_WITH_POSTS_PER_DAY]);
-        const totalUsersByEmailDomain = formatTotalUsersByEmailDomain(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
+        const totalUsersByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
+        const totalChannelsByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_CHANNELS_BY_EMAIL_DOMAIN]);
+        const totalUsersPerChannel = formatNameValue(stats[StatTypes.TOTAL_USERS_PER_CHANNEL]);
+        const totalPostsPerChannel = formatNameValue(stats[StatTypes.TOTAL_POSTS_PER_CHANNEL]);
+        const totalFilesPerChannel = formatNameValue(stats[StatTypes.TOTAL_FILES_PER_CHANNEL]);
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -248,6 +256,46 @@ class SystemAnalytics extends React.Component {
                             />
                         }
                         data={totalUsersByEmailDomain}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalChannelsByEmailDomain'
+                                defaultMessage='Total number of channels by email domain'
+                            />
+                        }
+                        data={totalChannelsByEmailDomain}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalUsersPerChannel'
+                                defaultMessage='Total number of users per channel'
+                            />
+                        }
+                        data={totalUsersPerChannel}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalPostsPerChannel'
+                                defaultMessage='Total number of posts per channel'
+                            />
+                        }
+                        data={totalPostsPerChannel}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalFilesPerChannel'
+                                defaultMessage='Total number of files per channel'
+                            />
+                        }
+                        data={totalFilesPerChannel}
                     />
                 </div>
             </div>
@@ -358,13 +406,13 @@ export function formatUsersWithPostsPerDayData(data) {
     return chartData;
 }
 
-export function formatTotalUsersByEmailDomain(data) {
+export function formatNameValue(data) {
     if (data == null) {
         return [];
     }
     const formattedData = data.map((row) => {
         const item = {};
-        item.name = row.name.replace('@', '');
+        item.name = row.name.replace(/^\@/, '');
         item.value = row.value;
         item.tip = item.name + ': ' + item.value;
         return item;

@@ -104,6 +104,10 @@ type PostStore interface {
 	GetForExport(channelId string) StoreChannel
 	AnalyticsUserCountsWithPostsByDay(teamId string) StoreChannel
 	AnalyticsTotalUsersByEmailDomain() StoreChannel
+	AnalyticsTotalChannelsByEmailDomain() StoreChannel
+	AnalyticsTotalUsersPerChannel() StoreChannel
+	AnalyticsTotalPostsPerChannel() StoreChannel
+	AnalyticsTotalFilesPerChannel() StoreChannel
 	AnalyticsPostCountsByDay(teamId string) StoreChannel
 	AnalyticsPostCount(teamId string, mustHaveFile bool, mustHaveHashtag bool) StoreChannel
 }

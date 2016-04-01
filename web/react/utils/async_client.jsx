@@ -1043,8 +1043,6 @@ export function getTotalUsersByEmailDomainAnalytics(teamId) {
         (data) => {
             callTracker[callName] = 0;
 
-            data.reverse();
-
             const stats = {};
             stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN] = data;
 
@@ -1058,6 +1056,134 @@ export function getTotalUsersByEmailDomainAnalytics(teamId) {
             callTracker[callName] = 0;
 
             dispatchError(err, 'getTotalUsersByEmailDomainAnalytics');
+        }
+    );
+}
+
+export function getTotalChannelsByEmailDomainAnalytics(teamId) {
+    const callName = 'getTotalChannelsByEmailDomainAnalytics';
+
+    if (isCallInProgress(callName)) {
+        return;
+    }
+
+    callTracker[callName] = utils.getTimestamp();
+
+    client.getAnalytics(
+        'total_channels_by_email_domain',
+        teamId,
+        (data) => {
+            callTracker[callName] = 0;
+
+            const stats = {};
+            stats[StatTypes.TOTAL_CHANNELS_BY_EMAIL_DOMAIN] = data;
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_ANALYTICS,
+                teamId,
+                stats
+            });
+        },
+        (err) => {
+            callTracker[callName] = 0;
+
+            dispatchError(err, 'getTotalChannelsByEmailDomainAnalytics');
+        }
+    );
+}
+
+export function getTotalUsersPerChannelAnalytics(teamId) {
+    const callName = 'getTotalUsersPerChannelAnalytics';
+
+    if (isCallInProgress(callName)) {
+        return;
+    }
+
+    callTracker[callName] = utils.getTimestamp();
+
+    client.getAnalytics(
+        'total_users_per_channel',
+        teamId,
+        (data) => {
+            callTracker[callName] = 0;
+
+            const stats = {};
+            stats[StatTypes.TOTAL_USERS_PER_CHANNEL] = data;
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_ANALYTICS,
+                teamId,
+                stats
+            });
+        },
+        (err) => {
+            callTracker[callName] = 0;
+
+            dispatchError(err, 'getTotalUsersPerChannelAnalytics');
+        }
+    );
+}
+
+export function getTotalPostsPerChannelAnalytics(teamId) {
+    const callName = 'getTotalPostsPerChannelAnalytics';
+
+    if (isCallInProgress(callName)) {
+        return;
+    }
+
+    callTracker[callName] = utils.getTimestamp();
+
+    client.getAnalytics(
+        'total_posts_per_channel',
+        teamId,
+        (data) => {
+            callTracker[callName] = 0;
+
+            const stats = {};
+            stats[StatTypes.TOTAL_POSTS_PER_CHANNEL] = data;
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_ANALYTICS,
+                teamId,
+                stats
+            });
+        },
+        (err) => {
+            callTracker[callName] = 0;
+
+            dispatchError(err, 'getTotalPostsPerChannelAnalytics');
+        }
+    );
+}
+
+export function getTotalFilesPerChannelAnalytics(teamId) {
+    const callName = 'getTotalFilesPerChannelAnalytics';
+
+    if (isCallInProgress(callName)) {
+        return;
+    }
+
+    callTracker[callName] = utils.getTimestamp();
+
+    client.getAnalytics(
+        'total_files_per_channel',
+        teamId,
+        (data) => {
+            callTracker[callName] = 0;
+
+            const stats = {};
+            stats[StatTypes.TOTAL_FILES_PER_CHANNEL] = data;
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_ANALYTICS,
+                teamId,
+                stats
+            });
+        },
+        (err) => {
+            callTracker[callName] = 0;
+
+            dispatchError(err, 'getTotalFilesPerChannelAnalytics');
         }
     );
 }
