@@ -427,6 +427,7 @@
   "analytics.chart.loading": "Loading...",
   "analytics.chart.meaningful": "Not enough data for a meaningful representation.",
   "analytics.system.activeUsers": "Active Users With Posts",
+  "analytics.system.totalUsersByEmailDomain": "Total number of users by email domain",
   "analytics.system.channelTypes": "Channel Types",
   "analytics.system.postTypes": "Posts, Files and Hashtags",
   "analytics.system.privateGroups": "Private Groups",
