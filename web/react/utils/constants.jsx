@@ -85,6 +85,7 @@ export default {
         TOTAL_SESSIONS: null,
         POST_PER_DAY: null,
         USERS_WITH_POSTS_PER_DAY: null,
+        TOTAL_USERS_BY_EMAIL_DOMAIN: null,
         RECENTLY_ACTIVE_USERS: null,
         NEWLY_CREATED_USERS: null
     }),

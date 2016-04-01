@@ -1028,6 +1028,40 @@ export function getUsersPerDayAnalytics(teamId) {
     );
 }
 
+export function getTotalUsersByEmailAnalytics(teamId) {
+    const callName = 'getTotalUsersByEmailAnalytics';
+
+    if (isCallInProgress(callName)) {
+        return;
+    }
+
+    callTracker[callName] = utils.getTimestamp();
+
+    client.getAnalytics(
+        'total_users_by_email_domain',
+        teamId,
+        (data) => {
+            callTracker[callName] = 0;
+
+            data.reverse();
+
+            const stats = {};
+            stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN] = data;
+
+            AppDispatcher.handleServerAction({
+                type: ActionTypes.RECEIVED_ANALYTICS,
+                teamId,
+                stats
+            });
+        },
+        (err) => {
+            callTracker[callName] = 0;
+
+            dispatchError(err, 'getTotalUsersByEmailAnalytics');
+        }
+    );
+}
+
 export function getRecentAndNewUsersAnalytics(teamId) {
     const callName = 'getRecentAndNewUsersAnalytics' + teamId;
 

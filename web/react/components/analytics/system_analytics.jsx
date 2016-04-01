@@ -52,6 +52,7 @@ class SystemAnalytics extends React.Component {
         AsyncClient.getStandardAnalytics();
         AsyncClient.getPostsPerDayAnalytics();
         AsyncClient.getUsersPerDayAnalytics();
+        AsyncClient.getTotalUsersByEmailAnalytics();
 
         if (global.window.mm_license.IsLicensed === 'true') {
             AsyncClient.getAdvancedAnalytics();
@@ -158,6 +159,7 @@ class SystemAnalytics extends React.Component {
 
         const postCountsDay = formatPostsPerDayData(stats[StatTypes.POST_PER_DAY]);
         const userCountsWithPostsDay = formatUsersWithPostsPerDayData(stats[StatTypes.USERS_WITH_POSTS_PER_DAY]);
+        const totalUsersByEmailDomain = formatTotalUsersByEmailDomainData(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -233,6 +235,19 @@ class SystemAnalytics extends React.Component {
                             />
                         }
                         data={userCountsWithPostsDay}
+                        width='740'
+                        height='225'
+                    />
+                </div>
+                <div className='row'>
+                    <LineChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalUsersByEmailDomain'
+                                defaultMessage='Total number of users by email domain'
+                            />
+                        }
+                        data={totalUsersByEmailDomain}
                         width='740'
                         height='225'
                     />
@@ -321,6 +336,31 @@ export function formatPostsPerDayData(data) {
 }
 
 export function formatUsersWithPostsPerDayData(data) {
+    var chartData = {
+        labels: [],
+        datasets: [{
+            fillColor: 'rgba(151,187,205,0.2)',
+            strokeColor: 'rgba(151,187,205,1)',
+            pointColor: 'rgba(151,187,205,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(151,187,205,1)',
+            data: []
+        }]
+    };
+
+    for (var index in data) {
+        if (data[index]) {
+            var row = data[index];
+            chartData.labels.push(row.name);
+            chartData.datasets[0].data.push(row.value);
+        }
+    }
+
+    return chartData;
+}
+
+export function formatTotalUsersByEmailDomainData(data) {
     var chartData = {
         labels: [],
         datasets: [{

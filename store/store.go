@@ -103,6 +103,7 @@ type PostStore interface {
 	Search(teamId string, userId string, params *model.SearchParams) StoreChannel
 	GetForExport(channelId string) StoreChannel
 	AnalyticsUserCountsWithPostsByDay(teamId string) StoreChannel
+	AnalyticsTotalUsersByEmailDomain() StoreChannel
 	AnalyticsPostCountsByDay(teamId string) StoreChannel
 	AnalyticsPostCount(teamId string, mustHaveFile bool, mustHaveHashtag bool) StoreChannel
 }

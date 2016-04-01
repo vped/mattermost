@@ -979,3 +979,58 @@ func (s SqlPostStore) AnalyticsPostCount(teamId string, mustHaveFile bool, mustH
 
 	return storeChannel
 }
+
+func (s SqlPostStore) AnalyticsTotalUsersByEmailDomain() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `
+			SELECT
+			    SUBSTRING(Email from "@.+$") AS Name,
+			    COUNT(*) AS Value
+			FROM
+			    Users
+			GROUP BY
+			    SUBSTRING(Email from "@.+$")
+			HAVING
+			    COUNT(*) > 0
+			ORDER BY
+			    COUNT(*)
+			LIMIT 30
+		`
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    SUBSTRING("email" from '@.+$') AS "Name",
+				    COUNT(*) AS "Value"
+				FROM
+				    "users"
+				GROUP BY
+				    SUBSTRING("email" from '@.+$')
+				HAVING
+				    COUNT(*) > 0
+				ORDER BY
+				    COUNT(*)
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalUsersByEmailDomain", "store.sql_post.analytics_user_counts_with_posts_day.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
