@@ -1028,8 +1028,8 @@ export function getUsersPerDayAnalytics(teamId) {
     );
 }
 
-export function getTotalUsersByEmailAnalytics(teamId) {
-    const callName = 'getTotalUsersByEmailAnalytics';
+export function getTotalUsersByEmailDomainAnalytics(teamId) {
+    const callName = 'getTotalUsersByEmailDomainAnalytics';
 
     if (isCallInProgress(callName)) {
         return;
@@ -1057,7 +1057,7 @@ export function getTotalUsersByEmailAnalytics(teamId) {
         (err) => {
             callTracker[callName] = 0;
 
-            dispatchError(err, 'getTotalUsersByEmailAnalytics');
+            dispatchError(err, 'getTotalUsersByEmailDomainAnalytics');
         }
     );
 }

@@ -4,7 +4,7 @@
 import LineChart from './line_chart.jsx';
 import DoughnutChart from './doughnut_chart.jsx';
 import StatisticCount from './statistic_count.jsx';
-
+import TableChart from './table_chart.jsx';
 import AnalyticsStore from '../../stores/analytics_store.jsx';
 
 import * as Utils from '../../utils/utils.jsx';
@@ -52,7 +52,7 @@ class SystemAnalytics extends React.Component {
         AsyncClient.getStandardAnalytics();
         AsyncClient.getPostsPerDayAnalytics();
         AsyncClient.getUsersPerDayAnalytics();
-        AsyncClient.getTotalUsersByEmailAnalytics();
+        AsyncClient.getTotalUsersByEmailDomainAnalytics();
 
         if (global.window.mm_license.IsLicensed === 'true') {
             AsyncClient.getAdvancedAnalytics();
@@ -159,7 +159,7 @@ class SystemAnalytics extends React.Component {
 
         const postCountsDay = formatPostsPerDayData(stats[StatTypes.POST_PER_DAY]);
         const userCountsWithPostsDay = formatUsersWithPostsPerDayData(stats[StatTypes.USERS_WITH_POSTS_PER_DAY]);
-        const totalUsersByEmailDomain = formatTotalUsersByEmailDomainData(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
+        const totalUsersByEmailDomain = formatTotalUsersByEmailDomain(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -240,7 +240,7 @@ class SystemAnalytics extends React.Component {
                     />
                 </div>
                 <div className='row'>
-                    <LineChart
+                    <TableChart
                         title={
                             <FormattedMessage
                                 id='analytics.system.totalUsersByEmailDomain'
@@ -248,8 +248,6 @@ class SystemAnalytics extends React.Component {
                             />
                         }
                         data={totalUsersByEmailDomain}
-                        width='740'
-                        height='225'
                     />
                 </div>
             </div>
@@ -360,27 +358,16 @@ export function formatUsersWithPostsPerDayData(data) {
     return chartData;
 }
 
-export function formatTotalUsersByEmailDomainData(data) {
-    var chartData = {
-        labels: [],
-        datasets: [{
-            fillColor: 'rgba(151,187,205,0.2)',
-            strokeColor: 'rgba(151,187,205,1)',
-            pointColor: 'rgba(151,187,205,1)',
-            pointStrokeColor: '#fff',
-            pointHighlightFill: '#fff',
-            pointHighlightStroke: 'rgba(151,187,205,1)',
-            data: []
-        }]
-    };
-
-    for (var index in data) {
-        if (data[index]) {
-            var row = data[index];
-            chartData.labels.push(row.name);
-            chartData.datasets[0].data.push(row.value);
-        }
+export function formatTotalUsersByEmailDomain(data) {
+    if (data == null) {
+        return [];
     }
-
-    return chartData;
+    const formattedData = data.map((row) => {
+        const item = {};
+        item.name = row.name.replace('@', '');
+        item.value = row.value;
+        item.tip = item.name + ': ' + item.value;
+        return item;
+    });
+    return formattedData;
 }

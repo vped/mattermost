@@ -988,12 +988,12 @@ func (s SqlPostStore) AnalyticsTotalUsersByEmailDomain() StoreChannel {
 
 		query := `
 			SELECT
-			    SUBSTRING(Email from "@.+$") AS Name,
+			    CONCAT('@', SUBSTRING_INDEX(Email, '@', -1)) AS Name,
 			    COUNT(*) AS Value
 			FROM
 			    Users
 			GROUP BY
-			    SUBSTRING(Email from "@.+$")
+			    CONCAT('@', SUBSTRING_INDEX(Email, '@', -1))
 			HAVING
 			    COUNT(*) > 0
 			ORDER BY
