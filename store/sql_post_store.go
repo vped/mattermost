@@ -1094,24 +1094,35 @@ func (s SqlPostStore) AnalyticsTotalUsersPerChannel() StoreChannel {
 			query = `
 				SELECT
 				    CONCAT("channels"."displayname", ' (', "users"."email", ')') AS "Name",
-				    COUNT("channelmembers"."userid") AS "Value"
+				    "Value"
 				FROM
-				    "channels",
-				    "channelmembers"
-				        LEFT JOIN
-				            "users"
-				        ON
-				            "users"."id" = "channelmembers"."userid"
-				        AND
-				            "channelmembers"."roles" = 'admin'
+				    (
+				    SELECT
+				        "channelmembers"."channelid",
+				        COUNT("channelmembers"."userid") AS "Value"
+				    FROM
+				        "channels",
+				        "channelmembers"
+				    WHERE
+				        "channels"."id" = "channelmembers"."channelid"
+				    GROUP BY
+				        "channelmembers"."channelid"
+				    HAVING
+				        COUNT("channelmembers"."userid") > 0
+				    ) AS "calc",
+				    "users",
+				    "channelmembers",
+				    "channels"
 				WHERE
+				    "channelmembers"."channelid" = "calc"."channelid"
+				AND
 				    "channels"."id" = "channelmembers"."channelid"
-				GROUP BY
-				    CONCAT("channels"."displayname", ' (', "users"."email", ')'), "channelmembers"."userid"
-				HAVING
-				    COUNT("channelmembers"."userid") > 0
+				AND
+				    "users"."id" = "channelmembers"."userid"
+				AND
+				    "channelmembers"."roles" = 'admin'
 				ORDER BY
-				    COUNT("channelmembers"."userid") DESC, CONCAT("channels"."displayname", ' (', "users"."email", ')') ASC
+				    "Value" DESC, CONCAT("channels"."displayname", ' (', "users"."email", ')')
 				LIMIT 30
 			`
 		}
