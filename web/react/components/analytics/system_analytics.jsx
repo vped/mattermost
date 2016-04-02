@@ -4,6 +4,7 @@
 import LineChart from './line_chart.jsx';
 import DoughnutChart from './doughnut_chart.jsx';
 import StatisticCount from './statistic_count.jsx';
+
 import TableChart from './table_chart.jsx';
 import AnalyticsStore from '../../stores/analytics_store.jsx';
 
@@ -57,6 +58,8 @@ class SystemAnalytics extends React.Component {
         AsyncClient.getTotalUsersPerChannelAnalytics();
         AsyncClient.getTotalPostsPerChannelAnalytics();
         AsyncClient.getTotalFilesPerChannelAnalytics();
+        AsyncClient.getPostsStatistics();
+        AsyncClient.getTotalPostsByEmailDomain();
 
         if (global.window.mm_license.IsLicensed === 'true') {
             AsyncClient.getAdvancedAnalytics();
@@ -168,6 +171,8 @@ class SystemAnalytics extends React.Component {
         const totalUsersPerChannel = formatNameValue(stats[StatTypes.TOTAL_USERS_PER_CHANNEL]);
         const totalPostsPerChannel = formatNameValue(stats[StatTypes.TOTAL_POSTS_PER_CHANNEL]);
         const totalFilesPerChannel = formatNameValue(stats[StatTypes.TOTAL_FILES_PER_CHANNEL]);
+        const postsStatistics = formatNameValue(stats[StatTypes.POSTS_STATISTICS]);
+        const totalPostsByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_POSTS_BY_EMAIL_DOMAIN]);
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -296,6 +301,26 @@ class SystemAnalytics extends React.Component {
                             />
                         }
                         data={totalFilesPerChannel}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.postsStatistics'
+                                defaultMessage='Posts Statistics'
+                            />
+                        }
+                        data={postsStatistics}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalPostsByEmailDomain'
+                                defaultMessage='Total number of posts by email domain'
+                            />
+                        }
+                        data={totalPostsByEmailDomain}
                     />
                 </div>
             </div>

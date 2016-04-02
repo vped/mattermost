@@ -90,6 +90,8 @@ export default {
         TOTAL_USERS_PER_CHANNEL: null,
         TOTAL_POSTS_PER_CHANNEL: null,
         TOTAL_FILES_PER_CHANNEL: null,
+        POSTS_STATISTICS: null,
+        TOTAL_POSTS_BY_EMAIL_DOMAIN: null,
         RECENTLY_ACTIVE_USERS: null,
         NEWLY_CREATED_USERS: null
     }),

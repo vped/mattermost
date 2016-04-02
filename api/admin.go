@@ -282,6 +282,20 @@ func getAnalytics(c *Context, w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
+ 	} else if name == "posts_statistics" {
+		if r := <-Srv.Store.Post().AnalyticsPostsStatistics(); r.Err != nil {
+			c.Err = r.Err
+			return
+		} else {
+			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
+		}
+ 	} else if name == "total_posts_by_email_domain" {
+		if r := <-Srv.Store.Post().AnalyticsTotalPostsByEmailDomain(); r.Err != nil {
+			c.Err = r.Err
+			return
+		} else {
+			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
+		}
 	} else if name == "extra_counts" {
 		var rows model.AnalyticsRows = make([]*model.AnalyticsRow, 6)
 		rows[0] = &model.AnalyticsRow{"file_post_count", 0}

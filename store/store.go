@@ -108,6 +108,8 @@ type PostStore interface {
 	AnalyticsTotalUsersPerChannel() StoreChannel
 	AnalyticsTotalPostsPerChannel() StoreChannel
 	AnalyticsTotalFilesPerChannel() StoreChannel
+	AnalyticsPostsStatistics() StoreChannel
+	AnalyticsTotalPostsByEmailDomain() StoreChannel
 	AnalyticsPostCountsByDay(teamId string) StoreChannel
 	AnalyticsPostCount(teamId string, mustHaveFile bool, mustHaveHashtag bool) StoreChannel
 }

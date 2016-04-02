@@ -1240,3 +1240,82 @@ func (s SqlPostStore) AnalyticsTotalFilesPerChannel() StoreChannel {
 
 	return storeChannel
 }
+
+func (s SqlPostStore) AnalyticsPostsStatistics() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				(SELECT 'Total number of posts' AS "Name", COUNT(*) AS "Value" FROM "posts")
+				UNION
+				(SELECT 'Number of posts with files' AS "Name", COUNT(*) AS "Value" FROM "posts"
+				WHERE "posts"."filenames" <> '[]')
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsPostsStatistics", "store.sql_post.post_statistics.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalPostsByEmailDomain() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    SUBSTRING("users"."email" from '@.+$') AS "Name",
+				    COUNT("posts"."id") AS "Value"
+				FROM
+				    "users",
+				    "posts"
+				WHERE
+				    "users"."id" = "posts"."userid"
+				GROUP BY
+				    SUBSTRING("users"."email" from '@.+$')
+				HAVING
+				    COUNT("posts"."id") > 0
+				ORDER BY
+				    COUNT("posts"."id") DESC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalPostsByEmailDomain", "store.sql_post.total_posts_by_email_domain.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}

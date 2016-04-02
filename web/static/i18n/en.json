@@ -432,6 +432,8 @@
   "analytics.system.totalUsersPerChannel": "Total number of users per channel",
   "analytics.system.totalPostsPerChannel": "Total number of posts per channel",
   "analytics.system.totalFilesPerChannel": "Total number of files per channel",
+  "analytics.system.postsStatistics": "Posts Statistics",
+  "analytics.system.totalPostsByEmailDomain": "Total number of posts by email domain",
   "analytics.system.channelTypes": "Channel Types",
   "analytics.system.postTypes": "Posts, Files and Hashtags",
   "analytics.system.privateGroups": "Private Groups",
