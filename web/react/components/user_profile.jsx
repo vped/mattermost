@@ -76,7 +76,7 @@ export default class UserProfile extends React.Component {
                         href={'mailto:' + this.props.user.email}
                         className='text-nowrap text-lowercase user-popover__email'
                     >
-                        111{this.props.user.email}
+                        {this.props.user.email}
                     </a>
                 </div>
             );
