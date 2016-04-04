@@ -718,6 +718,8 @@
   "intro_messages.setHeader": "Set a Header",
   "intro_messages.teammate": "This is the start of your direct message history with this teammate. Direct messages and files shared here are not shown to people outside this area.",
   "invite_member.addAnother": "Add another",
+  "invite_member.addMany": "Add many people at once",
+  "invite_member.addMultipleEmails": "Add multiple email addresses",
   "invite_member.autoJoin": "People invited automatically join the <strong>{channel}</strong> channel.",
   "invite_member.cancel": "Cancel",
   "invite_member.content": "Email is currently disabled for your team, and email invitations cannot be sent. Contact your system administrator to enable email and email invitations.",
