@@ -160,6 +160,10 @@ class InviteMemberModal extends React.Component {
             (err) => {
                 if (err.id === 'api.team.invite_members.already.app_error') {
                     emailErrors[err.detailed_error] = err.message;
+                    var emails = $('#addManyPeople').val().split('\n');
+                    if (emails.length > 0 && $('#addManyPeopleArea').is(':visible')) {
+                            emailErrors[err.detailed_error] += ': ' + emails[err.detailed_error];
+                    }
                     this.setState({emailErrors: emailErrors});
                 } else {
                     this.setState({serverError: err.message});
@@ -404,6 +408,7 @@ class InviteMemberModal extends React.Component {
                         <br/>
                         </div>
                         <div style={{display: 'none'}} id='addManyPeopleArea' className='row--invite'>
+                            <div className={emailClass}>{emailError}</div>
                             <div style={{display: 'none'}} className='form-group invite has-error' id='bulkEmailsError'>
                                 <label className='control-label'>{this.state.emailErrors['multiBoxError']}</label>
                             </div>
