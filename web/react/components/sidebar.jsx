@@ -12,6 +12,7 @@ import UserStore from '../stores/user_store.jsx';
 import TeamStore from '../stores/team_store.jsx';
 import PreferenceStore from '../stores/preference_store.jsx';
 
+import * as EventHelpers from '../dispatcher/event_helpers.jsx';
 import * as AsyncClient from '../utils/async_client.jsx';
 import * as Client from '../utils/client.jsx';
 import * as Utils from '../utils/utils.jsx';
@@ -619,6 +620,19 @@ export default class Sidebar extends React.Component {
                     className='nav-pills__container'
                     onScroll={this.onScroll}
                 >
+                    <ul className='nav nav-pills nav-stacked'>
+                        <li>
+                            <a
+                                href='#'
+                                onClick={EventHelpers.showInviteMemberModal}
+                            >
+                                <FormattedMessage
+                                    id='navbar_dropdown.inviteMember'
+                                    defaultMessage='Invite New Member'
+                                />
+                            </a>
+                        </li>
+                    </ul>
                     <ul className='nav nav-pills nav-stacked'>
                         <li>
                             <h4>

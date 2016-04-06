@@ -51,6 +51,7 @@ class InviteMemberModal extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleHide = this.handleHide.bind(this);
         this.addInviteFields = this.addInviteFields.bind(this);
+        this.addInviteBulk = this.addInviteBulk.bind(this);
         this.clearFields = this.clearFields.bind(this);
         this.removeInviteFields = this.removeInviteFields.bind(this);
         this.showGetTeamInviteLinkModal = this.showGetTeamInviteLinkModal.bind(this);
@@ -114,6 +115,31 @@ class InviteMemberModal extends React.Component {
             invites.push(invite);
         }
 
+        var emails = $('#addManyPeople').val().split('\n');
+        var bulkEmails = 0;
+        for (var i = 0; i < emails.length; i++) {
+            var invite = {};
+            invite.email = emails[i].trim();
+            if (invite.email == '') {
+                continue;
+            }
+            if (bulkEmails == 0) {
+                emailErrors = [];
+                invites = [];
+                valid = true;
+                /* just to be sure that we got at least one email entered into textarea */
+                bulkEmails++;
+            }
+            if (!invite.email || !utils.isEmail(invite.email)) {
+                emailErrors['multiBoxError'] = this.props.intl.formatMessage(holders.emailError);
+                valid = false;
+                $('#bulkEmailsError').show();
+            } else {
+                emailErrors['multiBoxError'] = '';
+            }
+            invites.push(invite);
+        }
+
         this.setState({emailErrors: emailErrors, firstNameErrors: firstNameErrors, lastNameErrors: lastNameErrors});
 
         if (!valid || invites.length === 0) {
@@ -134,6 +160,10 @@ class InviteMemberModal extends React.Component {
             (err) => {
                 if (err.id === 'api.team.invite_members.already.app_error') {
                     emailErrors[err.detailed_error] = err.message;
+                    var emails = $('#addManyPeople').val().split('\n');
+                    if (emails.length > 0 && $('#addManyPeopleArea').is(':visible')) {
+                            emailErrors[err.detailed_error] += ': ' + emails[err.detailed_error];
+                    }
                     this.setState({emailErrors: emailErrors});
                 } else {
                     this.setState({serverError: err.message});
@@ -188,8 +218,15 @@ class InviteMemberModal extends React.Component {
         this.setState({inviteIds: inviteIds, idCount: count});
     }
 
+    addInviteBulk() {
+        $('#addManyPeopleArea').show();
+        $('#addAnotherArea').hide();
+        $('.addAnotherFieldsArea').hide();
+    }
+
     clearFields() {
         var inviteIds = this.state.inviteIds;
+        $('#addManyPeople').val('');
 
         for (var i = 0; i < inviteIds.length; i++) {
             var index = inviteIds[i];
@@ -307,6 +344,7 @@ class InviteMemberModal extends React.Component {
                             </div>);
 
                 inviteSections[index] = (
+                    <div className='addAnotherFieldsArea' key={'addAnotherFieldsAreaKey' + index}>
                     <div key={'key' + index}>
                     {removeButton}
                     <div className={emailClass}>
@@ -323,6 +361,7 @@ class InviteMemberModal extends React.Component {
                         {emailError}
                     </div>
                     {nameFields}
+                    </div>
                     </div>
                 );
             }
@@ -344,6 +383,7 @@ class InviteMemberModal extends React.Component {
                 content = (
                     <div>
                         {serverError}
+                        <div id='addAnotherArea'>
                         <button
                             type='button'
                             className='btn btn-default'
@@ -354,7 +394,30 @@ class InviteMemberModal extends React.Component {
                                 defaultMessage='Add another'
                             />
                         </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button
+                            type='button'
+                            className='btn btn-default'
+                            onClick={this.addInviteBulk}
+                        >
+                            <FormattedMessage
+                                id='invite_member.addMany'
+                                defaultMessage='Add many people at once'
+                            />
+                        </button>
                         <br/>
+                        </div>
+                        <div style={{display: 'none'}} id='addManyPeopleArea' className='row--invite'>
+                            <div className={emailClass}>{emailError}</div>
+                            <div style={{display: 'none'}} className='form-group invite has-error' id='bulkEmailsError'>
+                                <label className='control-label'>{this.state.emailErrors['multiBoxError']}</label>
+                            </div>
+                           <FormattedMessage
+                                id='invite_member.addMultipleEmails'
+                                defaultMessage='Add multiple email addresses'
+                            />
+                            <textarea id='addManyPeople' rows='5' className='col-sm-12 form-control'></textarea>
+                        </div>
                         <br/>
                         <span>
                             <FormattedHTMLMessage
