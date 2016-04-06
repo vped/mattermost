@@ -80,7 +80,6 @@ export default class NavbarDropdown extends React.Component {
     }
     render() {
         var teamLink = '';
-        var inviteLink = '';
         var manageLink = '';
         var sysAdminLink = '';
         var adminDivider = '';
