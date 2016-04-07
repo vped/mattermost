@@ -5,6 +5,7 @@ import LineChart from './line_chart.jsx';
 import DoughnutChart from './doughnut_chart.jsx';
 import StatisticCount from './statistic_count.jsx';
 
+import TableChart from './table_chart.jsx';
 import AnalyticsStore from '../../stores/analytics_store.jsx';
 
 import * as Utils from '../../utils/utils.jsx';
@@ -52,6 +53,13 @@ class SystemAnalytics extends React.Component {
         AsyncClient.getStandardAnalytics();
         AsyncClient.getPostsPerDayAnalytics();
         AsyncClient.getUsersPerDayAnalytics();
+        AsyncClient.getTotalUsersByEmailDomainAnalytics();
+        AsyncClient.getTotalChannelsByEmailDomainAnalytics();
+        AsyncClient.getTotalUsersPerChannelAnalytics();
+        AsyncClient.getTotalPostsPerChannelAnalytics();
+        AsyncClient.getTotalFilesPerChannelAnalytics();
+        AsyncClient.getPostsStatistics();
+        AsyncClient.getTotalPostsByEmailDomain();
 
         if (global.window.mm_license.IsLicensed === 'true') {
             AsyncClient.getAdvancedAnalytics();
@@ -158,6 +166,13 @@ class SystemAnalytics extends React.Component {
 
         const postCountsDay = formatPostsPerDayData(stats[StatTypes.POST_PER_DAY]);
         const userCountsWithPostsDay = formatUsersWithPostsPerDayData(stats[StatTypes.USERS_WITH_POSTS_PER_DAY]);
+        const totalUsersByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_USERS_BY_EMAIL_DOMAIN]);
+        const totalChannelsByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_CHANNELS_BY_EMAIL_DOMAIN]);
+        const totalUsersPerChannel = formatNameValue(stats[StatTypes.TOTAL_USERS_PER_CHANNEL]);
+        const totalPostsPerChannel = formatNameValue(stats[StatTypes.TOTAL_POSTS_PER_CHANNEL]);
+        const totalFilesPerChannel = formatNameValue(stats[StatTypes.TOTAL_FILES_PER_CHANNEL]);
+        const postsStatistics = formatNameValue(stats[StatTypes.POSTS_STATISTICS]);
+        const totalPostsByEmailDomain = formatNameValue(stats[StatTypes.TOTAL_POSTS_BY_EMAIL_DOMAIN]);
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -235,6 +250,77 @@ class SystemAnalytics extends React.Component {
                         data={userCountsWithPostsDay}
                         width='740'
                         height='225'
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalUsersByEmailDomain'
+                                defaultMessage='Total number of users by email domain'
+                            />
+                        }
+                        data={totalUsersByEmailDomain}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalChannelsByEmailDomain'
+                                defaultMessage='Total number of channels by email domain'
+                            />
+                        }
+                        data={totalChannelsByEmailDomain}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalUsersPerChannel'
+                                defaultMessage='Total number of users per channel'
+                            />
+                        }
+                        data={totalUsersPerChannel}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalPostsPerChannel'
+                                defaultMessage='Total number of posts per channel'
+                            />
+                        }
+                        data={totalPostsPerChannel}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalFilesPerChannel'
+                                defaultMessage='Total number of files per channel'
+                            />
+                        }
+                        data={totalFilesPerChannel}
+                    />
+                </div>
+                <div className='row'>
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.postsStatistics'
+                                defaultMessage='Posts Statistics'
+                            />
+                        }
+                        data={postsStatistics}
+                    />
+                    <TableChart
+                        title={
+                            <FormattedMessage
+                                id='analytics.system.totalPostsByEmailDomain'
+                                defaultMessage='Total number of posts by email domain'
+                            />
+                        }
+                        data={totalPostsByEmailDomain}
                     />
                 </div>
             </div>
@@ -343,4 +429,18 @@ export function formatUsersWithPostsPerDayData(data) {
     }
 
     return chartData;
+}
+
+export function formatNameValue(data) {
+    if (data == null) {
+        return [];
+    }
+    const formattedData = data.map((row) => {
+        const item = {};
+        item.name = row.name.replace(/^\@/, '');
+        item.value = row.value;
+        item.tip = item.name + ': ' + item.value;
+        return item;
+    });
+    return formattedData;
 }

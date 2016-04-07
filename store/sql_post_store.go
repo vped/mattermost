@@ -979,3 +979,354 @@ func (s SqlPostStore) AnalyticsPostCount(teamId string, mustHaveFile bool, mustH
 
 	return storeChannel
 }
+
+func (s SqlPostStore) AnalyticsTotalUsersByEmailDomain() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `
+			SELECT
+			    CONCAT('@', SUBSTRING_INDEX(Email, '@', -1)) AS Name,
+			    COUNT(*) AS Value
+			FROM
+			    Users
+			GROUP BY
+			    CONCAT('@', SUBSTRING_INDEX(Email, '@', -1))
+			HAVING
+			    COUNT(*) > 0
+			ORDER BY
+			    COUNT(*) DESC
+			LIMIT 30
+		`
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    SUBSTRING("email" from '@.+$') AS "Name",
+				    COUNT(*) AS "Value"
+				FROM
+				    "users"
+				GROUP BY
+				    SUBSTRING("email" from '@.+$')
+				HAVING
+				    COUNT(*) > 0
+				ORDER BY
+				    COUNT(*) DESC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalUsersByEmailDomain", "store.sql_post.total_users_by_email_domain.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalChannelsByEmailDomain() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    SUBSTRING("users"."email" from '@.+$') AS "Name",
+				    COUNT("channelmembers"."channelid") AS "Value"
+				FROM
+				    "channelmembers",
+				    "users"
+				WHERE
+				    "users"."id" = "channelmembers"."userid"
+				AND
+				    "channelmembers"."roles" = 'admin'
+				GROUP BY
+				    SUBSTRING("users"."email" from '@.+$')
+				HAVING
+				    COUNT("channelmembers"."channelid") > 0
+				ORDER BY
+				    COUNT("channelmembers"."channelid") DESC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalChannelsByEmailDomain", "store.sql_post.total_channels_by_email_domain.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalUsersPerChannel() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    CONCAT("channels"."displayname", ' (', "users"."email", ')') AS "Name",
+				    "Value"
+				FROM
+				    (
+				    SELECT
+				        "channelmembers"."channelid",
+				        COUNT("channelmembers"."userid") AS "Value"
+				    FROM
+				        "channels",
+				        "channelmembers"
+				    WHERE
+				        "channels"."id" = "channelmembers"."channelid"
+				    GROUP BY
+				        "channelmembers"."channelid"
+				    HAVING
+				        COUNT("channelmembers"."userid") > 0
+				    ) AS "calc",
+				    "users",
+				    "channelmembers",
+				    "channels"
+				WHERE
+				    "channelmembers"."channelid" = "calc"."channelid"
+				AND
+				    "channels"."id" = "channelmembers"."channelid"
+				AND
+				    "users"."id" = "channelmembers"."userid"
+				AND
+				    "channelmembers"."roles" = 'admin'
+				ORDER BY
+				    "Value" DESC, CONCAT("channels"."displayname", ' (', "users"."email", ')')
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalUsersPerChannel", "store.sql_post.total_users_per_channel.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalPostsPerChannel() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    CONCAT("channels"."displayname", ' (', "users"."email", ')') AS "Name",
+				    COUNT("posts"."id") AS "Value"
+				FROM
+				    "channels",
+				    "channelmembers"
+				        LEFT JOIN
+				            "users"
+				        ON
+				            "users"."id" = "channelmembers"."userid"
+				        AND
+				            "channelmembers"."roles" = 'admin',
+				    "posts"
+				WHERE
+				    "channels"."id" = "channelmembers"."channelid"
+				AND
+				    "posts"."channelid" = "channels"."id"
+				GROUP BY
+				    CONCAT("channels"."displayname", ' (', "users"."email", ')'), "channelmembers"."userid"
+				HAVING
+				    COUNT("posts"."id") > 0
+				ORDER BY
+				    COUNT("posts"."id") DESC, CONCAT("channels"."displayname", ' (', "users"."email", ')') ASC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalPostsPerChannel", "store.sql_post.total_posts_per_channel.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalFilesPerChannel() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    CONCAT("channels"."displayname", ' (', "users"."email", ')') AS "Name",
+				    SUM(ROUND((LENGTH("posts"."filenames") - LENGTH(REPLACE("posts"."filenames", '"', '') )) / LENGTH('""'))) AS "Value"
+				FROM
+				    "channels",
+				    "channelmembers"
+				        LEFT JOIN
+				            "users"
+				        ON
+				            "users"."id" = "channelmembers"."userid"
+				        AND
+				            "channelmembers"."roles" = 'admin',
+				    "posts"
+				WHERE
+				    "channels"."id" = "channelmembers"."channelid"
+				AND
+				    "posts"."channelid" = "channels"."id"
+				GROUP BY
+				    CONCAT("channels"."displayname", ' (', "users"."email", ')'), "channelmembers"."userid"
+				HAVING
+				    SUM(ROUND((LENGTH("posts"."filenames") - LENGTH(REPLACE("posts"."filenames", '"', '') )) / LENGTH('""'))) > 0
+				ORDER BY
+				    SUM(ROUND((LENGTH("posts"."filenames") - LENGTH(REPLACE("posts"."filenames", '"', '') )) / LENGTH('""'))) DESC, CONCAT("channels"."displayname", ' (', "users"."email", ')') ASC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalFilesPerChannel", "store.sql_post.total_files_per_channel.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsPostsStatistics() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				(SELECT 'Total number of posts' AS "Name", COUNT(*) AS "Value" FROM "posts")
+				UNION
+				(SELECT 'Number of posts with files' AS "Name", COUNT(*) AS "Value" FROM "posts"
+				WHERE "posts"."filenames" <> '[]')
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsPostsStatistics", "store.sql_post.post_statistics.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) AnalyticsTotalPostsByEmailDomain() StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		query := `` // TODO: implement needed query for MySQL
+
+		if utils.Cfg.SqlSettings.DriverName == model.DATABASE_DRIVER_POSTGRES {
+			query = `
+				SELECT
+				    SUBSTRING("users"."email" from '@.+$') AS "Name",
+				    COUNT("posts"."id") AS "Value"
+				FROM
+				    "users",
+				    "posts"
+				WHERE
+				    "users"."id" = "posts"."userid"
+				GROUP BY
+				    SUBSTRING("users"."email" from '@.+$')
+				HAVING
+				    COUNT("posts"."id") > 0
+				ORDER BY
+				    COUNT("posts"."id") DESC
+				LIMIT 30
+			`
+		}
+
+		var rows model.AnalyticsRows
+		_, err := s.GetReplica().Select(
+			&rows,
+			query)
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.AnalyticsTotalPostsByEmailDomain", "store.sql_post.total_posts_by_email_domain.app_error", nil, err.Error())
+		} else {
+			result.Data = rows
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
