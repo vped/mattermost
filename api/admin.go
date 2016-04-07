@@ -247,49 +247,49 @@ func getAnalytics(c *Context, w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_users_by_email_domain" {
+	} else if name == "total_users_by_email_domain" {
 		if r := <-Srv.Store.Post().AnalyticsTotalUsersByEmailDomain(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_channels_by_email_domain" {
+	} else if name == "total_channels_by_email_domain" {
 		if r := <-Srv.Store.Post().AnalyticsTotalChannelsByEmailDomain(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_users_per_channel" {
+	} else if name == "total_users_per_channel" {
 		if r := <-Srv.Store.Post().AnalyticsTotalUsersPerChannel(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_posts_per_channel" {
+	} else if name == "total_posts_per_channel" {
 		if r := <-Srv.Store.Post().AnalyticsTotalPostsPerChannel(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_files_per_channel" {
+	} else if name == "total_files_per_channel" {
 		if r := <-Srv.Store.Post().AnalyticsTotalFilesPerChannel(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "posts_statistics" {
+	} else if name == "posts_statistics" {
 		if r := <-Srv.Store.Post().AnalyticsPostsStatistics(); r.Err != nil {
 			c.Err = r.Err
 			return
 		} else {
 			w.Write([]byte(r.Data.(model.AnalyticsRows).ToJson()))
 		}
- 	} else if name == "total_posts_by_email_domain" {
+	} else if name == "total_posts_by_email_domain" {
 		if r := <-Srv.Store.Post().AnalyticsTotalPostsByEmailDomain(); r.Err != nil {
 			c.Err = r.Err
 			return
