@@ -472,8 +472,8 @@ export default class UserSettingsDisplay extends React.Component {
                         setRequireConfirm={this.props.setRequireConfirm}
                         setEnforceFocus={this.props.setEnforceFocus}
                     />
-                    */}
                     <div className='divider-dark'/>
+                    */}
                     {fontSection}
                     <div className='divider-dark'/>
                     {clockSection}
