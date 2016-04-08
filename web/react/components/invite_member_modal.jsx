@@ -382,33 +382,61 @@ class InviteMemberModal extends React.Component {
                 defaultChannelName = ChannelStore.getByName(Constants.DEFAULT_CHANNEL).display_name;
             }
 
+            var teamInviteLink = null;
+            if (currentUser && TeamStore.getCurrent().type === 'O') {
+                var link = (
+                    <a
+                        href='#'
+                        onClick={this.showGetTeamInviteLinkModal}
+                    >
+                        <FormattedMessage
+                            id='invite_member.inviteLink'
+                            defaultMessage='Team Invite Link'
+                        />
+                    </a>
+                );
+
+                teamInviteLink = (
+                    <p>
+                        <FormattedMessage
+                            id='invite_member.teamInviteLink'
+                            defaultMessage='You can also invite people using the {link}.'
+                            values={{
+                                link: (link)
+                            }}
+                        />
+                    </p>
+                );
+            }
+
             if (this.state.emailEnabled && this.state.userCreationEnabled) {
                 content = (
                     <div>
                         {serverError}
                         <div id='addAnotherArea'>
-                        <button
-                            type='button'
-                            className='btn btn-default'
-                            onClick={this.addInviteFields}
-                        >
-                            <FormattedMessage
-                                id='invite_member.addAnother'
-                                defaultMessage='Add another'
-                            />
-                        </button>
-                        &nbsp;&nbsp;&nbsp;
-                        <button
-                            type='button'
-                            className='btn btn-default'
-                            onClick={this.addInviteBulk}
-                        >
-                            <FormattedMessage
-                                id='invite_member.addMany'
-                                defaultMessage='Add many people at once'
-                            />
-                        </button>
-                        <br/>
+                            <button
+                                type='button'
+                                className='btn btn-default'
+                                onClick={this.addInviteFields}
+                            >
+                                <FormattedMessage
+                                    id='invite_member.addAnother'
+                                    defaultMessage='Add another'
+                                />
+                            </button>
+                            &nbsp;&nbsp;&nbsp;
+                            <button
+                                type='button'
+                                className='btn btn-default'
+                                onClick={this.addInviteBulk}
+                            >
+                                <FormattedMessage
+                                    id='invite_member.addMany'
+                                    defaultMessage='Add many people at once'
+                                />
+                            </button>
+                            &nbsp;&nbsp;&nbsp;
+                            {teamInviteLink}
                         </div>
                         <div style={{display: 'none'}}
                             id='addManyPeopleArea'
@@ -478,33 +506,6 @@ class InviteMemberModal extends React.Component {
                     </button>
                 );
             } else if (this.state.userCreationEnabled) {
-                var teamInviteLink = null;
-                if (currentUser && TeamStore.getCurrent().type === 'O') {
-                    var link = (
-                        <a
-                            href='#'
-                            onClick={this.showGetTeamInviteLinkModal}
-                        >
-                            <FormattedMessage
-                                id='invite_member.inviteLink'
-                                defaultMessage='Team Invite Link'
-                            />
-                        </a>
-                    );
-
-                    teamInviteLink = (
-                        <p>
-                            <FormattedMessage
-                                id='invite_member.teamInviteLink'
-                                defaultMessage='You can also invite people using the {link}.'
-                                values={{
-                                    link: (link)
-                                }}
-                            />
-                        </p>
-                    );
-                }
-
                 content = (
                     <div>
                         <p>
