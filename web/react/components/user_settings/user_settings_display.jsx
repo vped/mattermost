@@ -4,7 +4,8 @@
 import SettingItemMin from '../setting_item_min.jsx';
 import SettingItemMax from '../setting_item_max.jsx';
 import ManageLanguages from './manage_languages.jsx';
-import ThemeSetting from './user_settings_theme.jsx';
+
+// import ThemeSetting from './user_settings_theme.jsx';
 
 import PreferenceStore from '../../stores/preference_store.jsx';
 import * as Utils from '../../utils/utils.jsx';

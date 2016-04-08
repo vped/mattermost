@@ -53,7 +53,8 @@ export default class UserProfile extends React.Component {
             />
         );
 
-        if (!(global.window.mm_config.ShowEmailAddress === 'true')) {
+        var hideEmailAddress = global.window.mm_config.ShowEmailAddress === 'true'; // NOTE(hjr265): to avoid ESLint's no-negated-condition issue and making a lot of changes
+        if (hideEmailAddress) {
             dataContent.push(
                 <div
                     className='text-nowrap'
