@@ -53,7 +53,7 @@ export default class UserProfile extends React.Component {
             />
         );
 
-        if (!global.window.mm_config.ShowEmailAddress === 'true') {
+        if (!(global.window.mm_config.ShowEmailAddress === 'true')) {
             dataContent.push(
                 <div
                     className='text-nowrap'
