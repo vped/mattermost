@@ -1068,6 +1068,10 @@
     "translation": "Failed to send invite email successfully err=%v"
   },
   {
+    "id": "api.team.invite_members.store.error",
+    "translation": "Failed to store invited member err=%v"
+  },
+  {
     "id": "api.team.invite_members.sending.info",
     "translation": "sending invitation to %v %v"
   },
@@ -2406,6 +2410,10 @@
   {
     "id": "store.sql.maxlength_column.critical",
     "translation": "Failed to get max length of column %v"
+  },
+  {
+    "id": "store.sql_members.list.app_error",
+    "translation": "Failed to get members list"
   },
   {
     "id": "store.sql.open_conn.critical",

@@ -50,6 +50,7 @@ type SqlStore struct {
 	command    CommandStore
 	preference PreferenceStore
 	license    LicenseStore
+	members    MembersStore
 }
 
 func NewSqlStore() Store {
@@ -105,6 +106,7 @@ func NewSqlStore() Store {
 	sqlStore.command = NewSqlCommandStore(sqlStore)
 	sqlStore.preference = NewSqlPreferenceStore(sqlStore)
 	sqlStore.license = NewSqlLicenseStore(sqlStore)
+	sqlStore.members = NewSqlMembersStore(sqlStore)
 
 	err := sqlStore.master.CreateTablesIfNotExists()
 	if err != nil {
@@ -565,6 +567,10 @@ func (ss SqlStore) Close() {
 	for _, replica := range ss.replicas {
 		replica.Db.Close()
 	}
+}
+
+func (ss SqlStore) Members() MembersStore {
+	return ss.members
 }
 
 func (ss SqlStore) Team() TeamStore {

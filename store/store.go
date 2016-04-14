@@ -40,8 +40,14 @@ type Store interface {
 	Command() CommandStore
 	Preference() PreferenceStore
 	License() LicenseStore
+	Members() MembersStore
 	MarkSystemRanUnitTests()
 	Close()
+}
+
+type MembersStore interface {
+	List(teamId string) StoreChannel
+	Invite(teamId, email string) StoreChannel
 }
 
 type TeamStore interface {

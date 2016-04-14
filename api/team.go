@@ -591,6 +591,10 @@ func InviteMembers(c *Context, team *model.Team, user *model.User, invites []str
 	for _, invite := range invites {
 		if len(invite) > 0 {
 
+			if result := <-Srv.Store.Members().Invite(team.Id, invite); result.Err != nil {
+				l4g.Error(utils.T("api.team.invite_members.store.error"), result.Err)
+			}
+
 			sender := user.GetDisplayName()
 
 			senderRole := ""
