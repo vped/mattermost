@@ -179,17 +179,21 @@ class NewChannelModal extends React.Component {
                                     />
                                     {displayNameError}
                                     <p className='input__help dark'>
-                                        {'URL: ' + prettyTeamURL + this.props.channelData.name + ' ('}
-                                        <a
-                                            href='#'
-                                            onClick={this.props.onChangeURLPressed}
-                                        >
-                                            <FormattedMessage
-                                                id='channel_modal.edit'
-                                                defaultMessage='Edit'
-                                            />
-                                        </a>
-                                        {')'}
+                                        {'URL: ' + prettyTeamURL + this.props.channelData.name}
+                                        {
+                                        //     <a
+                                        //         href='#'
+                                        //         onClick={this.props.onChangeURLPressed}
+                                        //     >
+                                        //         <FormattedMessage
+                                        //             id='channel_modal.edit'
+                                        //             defaultMessage='Edit'
+                                        //         />
+                                        //     </a>
+                                        // {')'}
+
+                                        }
+
                                     </p>
                                 </div>
                             </div>
