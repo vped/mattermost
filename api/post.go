@@ -865,8 +865,8 @@ func updatePost(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if post.UserIdLiked != "" {
-		if result := <-Srv.Store.Post().Like(post.Id, post.UserIdLiked); result.Err != nil {
+	if post.Liked != "" {
+		if result := <-Srv.Store.Post().Like(post.Id, c.Session.UserId); result.Err != nil {
 			c.Err = result.Err
 			return
 		}
@@ -874,8 +874,8 @@ func updatePost(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if post.UserIdUnliked != "" {
-		if result := <-Srv.Store.Post().Unlike(post.Id, post.UserIdUnliked); result.Err != nil {
+	if post.Unliked != "" {
+		if result := <-Srv.Store.Post().Unlike(post.Id, c.Session.UserId); result.Err != nil {
 			c.Err = result.Err
 			return
 		}

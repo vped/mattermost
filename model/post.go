@@ -35,8 +35,8 @@ type Post struct {
 	Hashtags      string          `json:"hashtags"`
 	Filenames     StringArray     `json:"filenames"`
 	PendingPostId string          `json:"pending_post_id" db:"-"`
-	UserIdLiked   string          `json:"user_id_liked"`
-	UserIdUnliked string          `json:"user_id_unliked"`
+	Liked         string          `json:"liked"`
+	Unliked       string          `json:"unliked"`
 }
 
 type PostLike struct {
