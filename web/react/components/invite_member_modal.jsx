@@ -116,8 +116,9 @@ class InviteMemberModal extends React.Component {
 
             invites.push(invited);
         }
-
-        var emails = $('#addManyPeople').val().split('\n');
+        var emails =[];
+        if($('#addManyPeople').val())
+            emails = $('#addManyPeople').val().split('\n');
         var bulkEmails = 0;
         for (var i = 0; i < emails.length; i++) {
             var invite = {};
