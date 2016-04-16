@@ -691,6 +691,16 @@ body.ios {
 			position: relative;
 		}
 	}
+  	.post__icon{
+	  color:red;
+	  margin-right: 4px;
+	  cursor:pointer;
+	}
+
+  .tooltip-inner {
+	white-space:nowrap;
+	max-width:none;
+  }
 
 	.post__remove {
 		font-family: 'Open Sans', sans-serif;

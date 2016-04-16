@@ -18,6 +18,17 @@ export default class PostInfo extends React.Component {
         this.handlePermalink = this.handlePermalink.bind(this);
         this.removePost = this.removePost.bind(this);
     }
+
+    componentDidMount(){
+        $('.post__icon',ReactDOM.findDOMNode(this)).tooltip({trigger: 'hover'});
+        $('.comment-icon__container',ReactDOM.findDOMNode(this)).tooltip();
+    }
+    
+    componentWillUnmount(){
+        $('.post__icon', ReactDOM.findDOMNode(this)).tooltip('destroy');
+        $('.comment-icon__container',ReactDOM.findDOMNode(this)).tooltip('destroy');
+    }
+
     dropdownPosition(e) {
         var position = $('#post-list').height() - $(e.target).offset().top;
         var dropdown = $(e.target).next('.dropdown-menu');
@@ -137,6 +148,7 @@ export default class PostInfo extends React.Component {
 
         return (
             <div>
+                <i className="post__icon fa fa-heart" aria-hidden="true" title="Like"></i>
                 <a
                     href='#'
                     className='dropdown-toggle post__dropdown theme'
@@ -197,6 +209,7 @@ export default class PostInfo extends React.Component {
                     href='#'
                     className={'comment-icon__container' + showCommentClass}
                     onClick={this.props.handleCommentClick}
+                    title="Reply"
                 >
                     <span
                         className='comment-icon'
