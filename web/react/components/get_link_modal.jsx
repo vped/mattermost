@@ -2,6 +2,7 @@
 // See License.txt for license information.
 
 import {FormattedMessage} from 'mm-intl';
+import * as EventHelpers from '../dispatcher/event_helpers.jsx';
 
 const Modal = ReactBootstrap.Modal;
 
@@ -13,6 +14,8 @@ export default class GetLinkModal extends React.Component {
 
         this.copyLink = this.copyLink.bind(this);
 
+        this.onCancel = this.onCancel.bind(this);
+
         this.state = {
             copiedLink: false
         };
@@ -20,11 +23,18 @@ export default class GetLinkModal extends React.Component {
 
     onHide() {
         this.setState({copiedLink: false});
-
+        
         this.props.onHide();
     }
 
+    onCancel(){
+        this.setState({copiedLink: false});
+        this.props.onHide();
+        EventHelpers.showInviteMemberModal();
+    }
+
     copyLink() {
+        this.props.onHide();
         var copyTextarea = $(ReactDOM.findDOMNode(this.refs.textarea));
         copyTextarea.select();
 
@@ -104,6 +114,16 @@ export default class GetLinkModal extends React.Component {
                     {linkText}
                 </Modal.Body>
                 <Modal.Footer>
+                    <button
+                        type='button'
+                        className='btn btn-default'
+                        onClick={this.onCancel}
+                    >
+                        <FormattedMessage
+                            id='invite_member.cancel'
+                            defaultMessage='Cancel'
+                        />
+                    </button>
                     <button
                         type='button'
                         className='btn btn-default'
