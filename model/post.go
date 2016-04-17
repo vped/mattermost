@@ -35,6 +35,13 @@ type Post struct {
 	Hashtags      string          `json:"hashtags"`
 	Filenames     StringArray     `json:"filenames"`
 	PendingPostId string          `json:"pending_post_id" db:"-"`
+	Liked         string          `json:"liked"`
+	Unliked       string          `json:"unliked"`
+}
+
+type PostLike struct {
+	PostId string `json:"post_id"`
+	UserId string `json:"user_id"`
 }
 
 func (o *Post) ToJson() string {

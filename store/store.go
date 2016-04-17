@@ -118,6 +118,8 @@ type PostStore interface {
 	AnalyticsTotalPostsByEmailDomain() StoreChannel
 	AnalyticsPostCountsByDay(teamId string) StoreChannel
 	AnalyticsPostCount(teamId string, mustHaveFile bool, mustHaveHashtag bool) StoreChannel
+	Like(postID, userID string) StoreChannel
+	Unlike(postID, userID string) StoreChannel
 }
 
 type UserStore interface {

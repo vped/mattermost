@@ -32,6 +32,11 @@ func NewSqlPostStore(sqlStore *SqlStore) PostStore {
 		table.ColMap("Hashtags").SetMaxSize(1000)
 		table.ColMap("Props").SetMaxSize(8000)
 		table.ColMap("Filenames").SetMaxSize(4000)
+
+		tablePostsLikes := db.AddTableWithName(model.PostLike{}, "PostsLikes")
+		tablePostsLikes.ColMap("PostId").SetMaxSize(26)
+		tablePostsLikes.ColMap("UserId").SetMaxSize(26)
+		tablePostsLikes.SetUniqueTogether("PostId", "UserId")
 	}
 
 	return s
@@ -138,6 +143,47 @@ func (s SqlPostStore) Update(oldPost *model.Post, newMessage string, newHashtags
 			s.GetMaster().Insert(oldPost)
 
 			result.Data = &editPost
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) Like(postID, userID string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		var postLike model.PostLike
+
+		_, err := s.GetReplica().Select(&postLike, "SELECT * FROM PostsLikes WHERE PostID = :postID AND UserID = :userID", map[string]interface{}{"postID": postID, "userID": userID})
+		if err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.GetPost", "store.sql_post.get.app_error", nil, "PostID="+postID+", "+err.Error())
+		} else if postLike.PostId == "" {
+			if _, err := s.GetMaster().Exec(`INSERT INTO PostsLikes VALUES ($1, $2)`, postID, userID); err != nil {
+				result.Err = model.NewLocAppError("SqlPostStore.Update", "store.sql_post.update.app_error", nil, "id="+postID+", "+err.Error())
+			}
+		}
+
+		storeChannel <- result
+		close(storeChannel)
+	}()
+
+	return storeChannel
+}
+
+func (s SqlPostStore) Unlike(postID, userID string) StoreChannel {
+	storeChannel := make(StoreChannel)
+
+	go func() {
+		result := StoreResult{}
+
+		if _, err := s.GetMaster().Exec(`DELETE FROM PostsLikes WHERE PostID = :postID AND UserID = :userID`, map[string]interface{}{"postID": postID, "userID": userID}); err != nil {
+			result.Err = model.NewLocAppError("SqlPostStore.Update", "store.sql_post.update.app_error", nil, "id="+postID+", "+err.Error())
 		}
 
 		storeChannel <- result

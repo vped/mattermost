@@ -865,6 +865,24 @@ func updatePost(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if post.Liked != "" {
+		if result := <-Srv.Store.Post().Like(post.Id, c.Session.UserId); result.Err != nil {
+			c.Err = result.Err
+			return
+		}
+		w.Write([]byte(`"SUCCESS": true`))
+		return
+	}
+
+	if post.Unliked != "" {
+		if result := <-Srv.Store.Post().Unlike(post.Id, c.Session.UserId); result.Err != nil {
+			c.Err = result.Err
+			return
+		}
+		w.Write([]byte(`"SUCCESS": true`))
+		return
+	}
+
 	hashtags, _ := model.ParseHashtags(post.Message)
 
 	if result := <-Srv.Store.Post().Update(oldPost, post.Message, hashtags); result.Err != nil {
