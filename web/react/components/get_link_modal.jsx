@@ -120,7 +120,7 @@ export default class GetLinkModal extends React.Component {
                         onClick={this.onCancel}
                     >
                         <FormattedMessage
-                            id='invite_member.cancel'
+                            id='get_link.cancel'
                             defaultMessage='Cancel'
                         />
                     </button>
