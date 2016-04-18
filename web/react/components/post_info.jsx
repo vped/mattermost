@@ -5,7 +5,7 @@ import UserStore from '../stores/user_store.jsx';
 import * as Utils from '../utils/utils.jsx';
 import TimeSince from './time_since.jsx';
 import * as EventHelpers from '../dispatcher/event_helpers.jsx';
-
+import * as Client from '../utils/client.jsx';
 import Constants from '../utils/constants.jsx';
 
 import {FormattedMessage} from 'mm-intl';
@@ -14,19 +14,60 @@ export default class PostInfo extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            liked: false
+        };
+
         this.dropdownPosition = this.dropdownPosition.bind(this);
         this.handlePermalink = this.handlePermalink.bind(this);
         this.removePost = this.removePost.bind(this);
+        this.addLike = this.addLike.bind(this);
     }
 
-    componentDidMount(){
-        $('.post__icon',ReactDOM.findDOMNode(this)).tooltip({trigger: 'hover'});
-        $('.comment-icon__container',ReactDOM.findDOMNode(this)).tooltip();
+    componentDidMount() {
+        $('.post__icon', ReactDOM.findDOMNode(this)).tooltip({trigger: 'hover'});
+        $('.comment-icon__container', ReactDOM.findDOMNode(this)).tooltip();
     }
     
     componentWillUnmount(){
         $('.post__icon', ReactDOM.findDOMNode(this)).tooltip('destroy');
-        $('.comment-icon__container',ReactDOM.findDOMNode(this)).tooltip('destroy');
+        $('.comment-icon__container', ReactDOM.findDOMNode(this)).tooltip('destroy');
+    }
+
+    addLike() {
+        let data = this.props.post;
+
+        if (this.state.liked) {
+            this.setState({
+                liked: false
+            }, () => {
+                data.liked = 'unliked';
+                Client.updatePost(
+                    this.props.post,
+                    (success) => {
+                        console.log("successs", success);
+                    },
+                    (err) => {
+                        console.log("errr11111rrrr",err);
+                    }
+                );
+            });
+        }else{
+            this.setState({
+                liked : true
+            }, function(success) {
+                 data.liked = "liked";
+                Client.updatePost(
+                    this.props.post,
+                    (success) => {
+                        console.log("successs", success);
+                    },
+                    (err) => {
+                        console.log("errr11111rrrr",err);
+                    }
+                );
+            });
+        }
     }
 
     dropdownPosition(e) {
@@ -148,7 +189,13 @@ export default class PostInfo extends React.Component {
 
         return (
             <div>
-                <i className="post__icon fa fa-heart" aria-hidden="true" title="Like"></i>
+                <a
+                    href='#'
+                    className={(this.state.liked ? 'post__like__icon post__icon' : 'post__unlike__icon post__icon') +" fa fa-heart"}
+                    type='button'
+                    title={this.state.liked ? 'Unlike' : 'Like'}
+                    onClick={this.addLike}
+                />
                 <a
                     href='#'
                     className='dropdown-toggle post__dropdown theme'

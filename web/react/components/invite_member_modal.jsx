@@ -67,8 +67,8 @@ class InviteMemberModal extends React.Component {
             userCreationEnabled: global.window.mm_config.EnableUserCreation === 'true',
             showConfirmModal: false,
             isSendingEmails: false,
-            multipleInvite:false,
-            addAnotherArea:true
+            multipleInvite: false,
+            addAnotherArea: true
         };
     }
 
@@ -116,9 +116,11 @@ class InviteMemberModal extends React.Component {
 
             invites.push(invited);
         }
-        var emails =[];
-        if($('#addManyPeople').val())
+        var emails = [];
+        if ($('#addManyPeople').val()) {
             emails = $('#addManyPeople').val().split('\n');
+        }
+
         var bulkEmails = 0;
         for (var i = 0; i < emails.length; i++) {
             var invite = {};
@@ -152,7 +154,6 @@ class InviteMemberModal extends React.Component {
 
         var data = {};
         data.invites = invites;
-
         this.setState({isSendingEmails: true});
 
         Client.inviteMembers(
@@ -178,15 +179,15 @@ class InviteMemberModal extends React.Component {
         );
     }
 
-    showInitialModal(){
+    showInitialModal() {
         $('.addAnotherFieldsArea').show();
-        this.setState({multipleInvite:false,addAnotherArea:true});
+        this.setState({multipleInvite: false, addAnotherArea: true});
     }
 
-    handleHide(requireConfirm,cancelClick) {
-        if(this.state.multipleInvite && cancelClick){
+    handleHide(requireConfirm, cancelClick) {
+        if (this.state.multipleInvite && cancelClick) {
             this.showInitialModal();
-        }else {
+        } else {
             if (requireConfirm) {
                 var notEmpty = false;
                 for (var i = 0; i < this.state.inviteIds.length; i++) {
@@ -201,7 +202,6 @@ class InviteMemberModal extends React.Component {
                     this.setState({
                         showConfirmModal: true
                     });
-
                     return;
                 }
             }
@@ -210,9 +210,8 @@ class InviteMemberModal extends React.Component {
             this.setState({
                 show: false,
                 showConfirmModal: false,
-                multipleInvite:false,
-                addAnotherArea:true
-
+                multipleInvite: false,
+                addAnotherArea: true
             });
         }
     }
@@ -235,7 +234,7 @@ class InviteMemberModal extends React.Component {
 
     addInviteBulk() {
         $('.addAnotherFieldsArea').hide();
-        this.setState({multipleInvite:true,addAnotherArea:false});
+        this.setState({multipleInvite: true, addAnotherArea: false});
     }
 
     clearFields() {
@@ -257,8 +256,6 @@ class InviteMemberModal extends React.Component {
             lastNameErrors: {}
         });
     }
-
-
     removeInviteFields(index) {
         var count = this.state.idCount;
         var inviteIds = this.state.inviteIds;
@@ -282,7 +279,7 @@ class InviteMemberModal extends React.Component {
         var currentUser = UserStore.getCurrentUser();
         const {formatMessage} = this.props.intl;
 
-        if (currentUser != null) {
+        if (currentUser !== null) {
             var inviteSections = [];
             var inviteIds = this.state.inviteIds;
             for (var i = 0; i < inviteIds.length; i++) {
@@ -428,7 +425,7 @@ class InviteMemberModal extends React.Component {
                     <div>
                         {serverError}
                         {
-                            this.state.addAnotherArea?
+                            this.state.addAnotherArea ?
                                 <div id='addAnotherArea'>
                                     <button
                                         type='button'
@@ -453,30 +450,30 @@ class InviteMemberModal extends React.Component {
                                     </button>
                                     &nbsp;&nbsp;&nbsp;
                                     {teamInviteLink}
-                                </div>:null
+                                </div> : null
                         }
                         {
-                            this.state.multipleInvite?
-                                <div
-                                     id='addManyPeopleArea'
-                                     className='row--invite'
+                        this.state.multipleInvite ?
+                            <div
+                                id='addManyPeopleArea'
+                                className='row--invite'
+                            >
+                                <div style={{display: 'none'}}
+                                    className='form-group invite has-error'
+                                    id='bulkEmailsError'
                                 >
-                                    <div style={{display: 'none'}}
-                                         className='form-group invite has-error'
-                                         id='bulkEmailsError'
-                                    >
-                                        <label className='control-label'>{this.state.emailErrors.multiBoxError}</label>
-                                    </div>
-                                    <FormattedMessage
-                                        id='invite_member.addMultipleEmails'
-                                        defaultMessage='Add multiple email addresses'
-                                    />
-                                <textarea id='addManyPeople'
-                                          rows='5'
-                                          className='col-sm-12 form-control'
-                                >
-                                </textarea>
-                            </div>:null
+                                    <label className='control-label'>{this.state.emailErrors.multiBoxError}</label>
+                                </div>
+                                <FormattedMessage
+                                    id='invite_member.addMultipleEmails'
+                                    defaultMessage='Add multiple email addresses'
+                                />
+                            <textarea id='addManyPeople'
+                                rows='5'
+                                className='col-sm-12 form-control'
+                            >
+                            </textarea>
+                        </div> : null
                         }
 
                         <br/>
@@ -556,7 +553,7 @@ class InviteMemberModal extends React.Component {
                     <Modal
                         dialogClassName='modal-invite-member'
                         show={this.state.show}
-                        onHide={this.handleHide.bind(this, true,false)}
+                        onHide={this.handleHide.bind(this, true, false)}
                         enforceFocus={!this.state.showConfirmModal}
                         backdrop={this.state.isSendingEmails ? 'static' : true}
                     >
@@ -578,7 +575,7 @@ class InviteMemberModal extends React.Component {
                             <button
                                 type='button'
                                 className='btn btn-default'
-                                onClick={this.handleHide.bind(this, true,true)}
+                                onClick={this.handleHide.bind(this, true, true)}
                                 disabled={this.state.isSendingEmails}
                             >
                                 <FormattedMessage
