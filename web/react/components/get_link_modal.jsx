@@ -23,11 +23,10 @@ export default class GetLinkModal extends React.Component {
 
     onHide() {
         this.setState({copiedLink: false});
-        
         this.props.onHide();
     }
 
-    onCancel(){
+    onCancel() {
         this.setState({copiedLink: false});
         this.props.onHide();
         EventHelpers.showInviteMemberModal();
