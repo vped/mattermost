@@ -1,6 +1,3 @@
-// Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
-// See License.txt for license information.
-
 import FilteredUserList from './filtered_user_list.jsx';
 import LoadingScreen from './loading_screen.jsx';
 

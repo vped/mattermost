@@ -314,19 +314,19 @@ class FilteredUserList extends React.Component {
                     <ul className='nav nav-pills'>
                         <li className='pill-list'>
                             <a data-toggle='pill'
-                                href='#recenty_added'
-                                onClick={this.pillClicked.bind(this, 'added')}
+                               href='#recenty_added'
+                               onClick={this.pillClicked.bind(this, 'added')}
                             >Recently Added</a></li>
                         <li className='pill-list'>
                             <a data-toggle='pill'
-                                href='#recently_invited'
-                                onClick={this.pillClicked.bind(this, 'invited')}
+                               href='#recently_invited'
+                               onClick={this.pillClicked.bind(this, 'invited')}
                             >Recently Invited</a>
                         </li>
                         <li className='pill-list'>
                             <a data-toggle='pill'
-                                href='#get_link'
-                                onClick={this.pillClicked.bind(this, 'link')}
+                               href='#get_link'
+                               onClick={this.pillClicked.bind(this, 'link')}
                             >Get Link</a>
                         </li>
                     </ul>
@@ -335,7 +335,7 @@ class FilteredUserList extends React.Component {
                     }
                     <div className='tab-content'>
                         <div id='recenty_added'
-                            className='tab-pane fade in'
+                             className='tab-pane fade in'
                         >
                             {this.recently_added_arr && this.recently_added_arr.length ?
                                 <div>
@@ -359,14 +359,14 @@ class FilteredUserList extends React.Component {
                                         this.recently_added_arr.map((obj, index) => {
                                             return (
                                                 <div className='col-md-4 col-xs-4'
-                                                    key={index}
+                                                     key={index}
                                                 >
-                                                <input checked={this.state.addedState[index]}
-                                                    type='checkbox'
-                                                    name={obj.email}
-                                                    value={obj.email}
-                                                    onChange={this.toggleCheckboxAdded.bind(this, index)}
-                                                />
+                                                    <input checked={this.state.addedState[index]}
+                                                           type='checkbox'
+                                                           name={obj.email}
+                                                           value={obj.email}
+                                                           onChange={this.toggleCheckboxAdded.bind(this, index)}
+                                                    />
                                                     {obj.email}
                                                 </div>
                                             );
@@ -376,22 +376,22 @@ class FilteredUserList extends React.Component {
                             }
                         </div>
                         <div id='recently_invited'
-                            className='tab-pane col fade'
+                             className='tab-pane col fade'
                         >
                             <div className='col-md-12'>
                                 <div className='col-md-9'>
                                     <textarea id='recently_invited_email'
-                                        rows='4'
-                                        cols='50'
-                                        placeholder={formatMessage(holders.multipleEmail)}
+                                              rows='4'
+                                              cols='50'
+                                              placeholder={formatMessage(holders.multipleEmail)}
                                     >
 
                                     </textarea>
                                 </div>
                                 <div className='col-md-3'>
                                     <button type='button'
-                                        onClick={this.inviteSelected.bind(this)}
-                                        className='btn btn-primary btn-lg'
+                                            onClick={this.inviteSelected.bind(this)}
+                                            className='btn btn-primary btn-lg'
                                     >
                                         <FormattedMessage
                                             id='filtered_user_list.send'
@@ -402,10 +402,10 @@ class FilteredUserList extends React.Component {
                             </div>
                             <br/>
                             <input checked={this.state.checkAllInvited}
-                                onChange={this.selectAllInvited.bind(this)}
-                                type='checkbox'
-                                name='select_all'
-                                value='all_users'
+                                   onChange={this.selectAllInvited.bind(this)}
+                                   type='checkbox'
+                                   name='select_all'
+                                   value='all_users'
                             /> Select All
 
                             {this.recently_invited_arr && this.recently_invited_arr.length ?
@@ -414,20 +414,20 @@ class FilteredUserList extends React.Component {
                                         this.recently_invited_arr.map((obj, index) => {
                                             return (
                                                 <div className='col-md-4 col-xs-4'
-                                                    key={index}
+                                                     key={index}
                                                 >
                                                     <input checked={this.state.invitedState[index]}
-                                                        type='checkbox'
-                                                        name={obj.email}
-                                                        value={obj.email}
-                                                        onChange={this.toggleCheckboxInvited.bind(this, index)}
+                                                           type='checkbox'
+                                                           name={obj.email}
+                                                           value={obj.email}
+                                                           onChange={this.toggleCheckboxInvited.bind(this, index)}
                                                     />
-                                                {obj.email}
+                                                    {obj.email}
                                                 </div>
                                             );
                                         })
                                     }
-                                        </div> : <div>No recently invited users :(</div>
+                                </div> : <div>No recently invited users :(</div>
                             }
                         </div>
                         <div
@@ -449,10 +449,10 @@ class FilteredUserList extends React.Component {
                             ref='userList'
                             className='user-list'
                         >
-                        <UserList
-                            users={users}
-                            actions={this.props.actions}
-                        />
+                            <UserList
+                                users={users}
+                                actions={this.props.actions}
+                            />
                         </div> : null
                 }
             </div>
