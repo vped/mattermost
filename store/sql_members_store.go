@@ -39,8 +39,21 @@ func (st SqlMembersStore) List(teamId string) StoreChannel {
 		result := StoreResult{}
 
 		var members model.MembersSlice
-
-		if _, err := st.GetReplica().Select(&members, "SELECT * FROM Members WHERE TeamId = :TeamId", map[string]interface{}{"TeamId": teamId}); err != nil {
+		query := `
+			SELECT
+				Members.*,
+			 	COALESCE(Users.firstname, '') AS FirstName,
+			 	COALESCE(Users.lastname, '') AS LastName
+			FROM
+				Members
+					LEFT JOIN
+						Users
+					ON
+						Members.Email = Users.Email
+			WHERE
+				Members.TeamId = :TeamId
+		`
+		if _, err := st.GetReplica().Select(&members, query, map[string]interface{}{"TeamId": teamId}); err != nil {
 			result.Err = model.NewLocAppError("SqlMembersStore.List", "store.sql_members.list.app_error", nil, err.Error())
 		} else {
 			result.Data = members
