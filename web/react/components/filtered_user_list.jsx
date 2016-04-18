@@ -181,14 +181,14 @@ class FilteredUserList extends React.Component {
         this.addedList = [];
         if (event.target.checked) {
             this.state.inviteData.forEach((data, index) => {
-                if (data.type === 'invited') {
+                if (data.type === 'added') {
                     addedState[index] = true;
                     this.addedList.push(data.email);
                 }
             });
         } else {
             this.state.inviteData.forEach((data, index) => {
-                if (data.type === 'invited') {
+                if (data.type === 'added') {
                     addedState[index] = false;
                 }
             });
@@ -201,15 +201,15 @@ class FilteredUserList extends React.Component {
     }
 
     inviteAddedMember() {
-        Client.inviteMembersToChannel(
-            data,
-            (success) => {
-                //success
-            },
-            (err) => {
-                //err
-            }
-        );
+        // Client.inviteMembersToChannel(
+        //     data,
+        //     (success) => {
+        //         //success
+        //     },
+        //     (err) => {
+        //         //err
+        //     }
+        // );
     }
 
     inviteSelected() {
@@ -227,13 +227,13 @@ class FilteredUserList extends React.Component {
         data.invites = invites;
 
         Client.inviteMembersToChannel(
-            data,
-            (success) => {
-                //success
-            },
-            (err) => {
-                //err
-            }
+        //     data,
+        //     (success) => {
+        //         //success
+        //     },
+        //     (err) => {
+        //         //err
+        //     }
         );
     }
 
