@@ -23,10 +23,17 @@ export default class ChannelInviteModal extends React.Component {
         this.handleInvite = this.handleInvite.bind(this);
 
         this.createInviteButton = this.createInviteButton.bind(this);
+        this.showCancelButton = this.showCancelButton.bind(this);
+        this.showCopyLink = this.showCopyLink.bind(this);
+        this.hideCopyLink = this.hideCopyLink.bind(this);
+        this.hideCancelButton = this.hideCancelButton.bind(this);
+        this.closeButton = this.closeButton.bind(this);
 
         // the state gets populated when the modal is shown
         this.state = {
-            loading: true
+            loading: true,
+            showCancelButton: false,
+            showCopyButton: false
         };
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -116,6 +123,44 @@ export default class ChannelInviteModal extends React.Component {
             }
         );
     }
+    showCancelButton() {
+        if (!this.state.showCancelButton) {
+            this.setState({
+                showCancelButton: true
+            });
+        }
+    }
+
+    showCopyLink() {
+        if (!this.state.showCopyButton) {
+            this.setState({
+                showCopyButton: true
+            });
+        }
+    }
+
+    hideCopyLink() {
+        if (this.state.showCopyButton) {
+            this.setState({
+                showCopyButton: false
+            });
+        }
+    }
+
+    hideCancelButton() {
+        this.setState({
+            showCancelButton: false,
+            showCopyButton: false
+        });
+    }
+
+    closeButton() {
+        this.setState({
+            showCopyButton: false
+        });
+        this.props.onHide();
+    }
+
     createInviteButton({user}) {
         return (
             <a
@@ -136,6 +181,23 @@ export default class ChannelInviteModal extends React.Component {
             inviteError = (<label className='has-error control-label'>{this.state.inviteError}</label>);
         }
 
+        let copyLink = null;
+        if (document.queryCommandSupported('copy') && this.state.showCopyButton) {
+            copyLink = (
+                <button
+                    data-copy-btn='true'
+                    type='button'
+                    className='btn btn-primary pull-left'
+                    onClick={this.copyLink}
+                >
+                    <FormattedMessage
+                        id='channel_modal.copy'
+                        defaultMessage='Copy Link'
+                    />
+                </button>
+            );
+        }
+
         var content;
         if (this.state.loading) {
             content = (<LoadingScreen/>);
@@ -150,6 +212,10 @@ export default class ChannelInviteModal extends React.Component {
                     style={{maxHeight}}
                     users={this.state.nonmembers}
                     actions={[this.createInviteButton]}
+                    showCancel={this.showCancelButton}
+                    showInitialState={this.state.showCancelButton}
+                    showCopyLink={this.showCopyLink}
+                    hideCopyLink={this.hideCopyLink}
                 />
             );
         }
@@ -174,10 +240,24 @@ export default class ChannelInviteModal extends React.Component {
                     {content}
                 </Modal.Body>
                 <Modal.Footer>
+                    {copyLink}
+                    {
+                        this.state.showCancelButton ?
+                            <button
+                                type='button'
+                                className='btn btn-default'
+                                onClick={this.hideCancelButton}
+                            >
+                                <FormattedMessage
+                                    id='channel_invite.cancel'
+                                    defaultMessage='Cancel'
+                                />
+                            </button> : null
+                    }
                     <button
                         type='button'
                         className='btn btn-default'
-                        onClick={this.props.onHide}
+                        onClick={this.closeButton}
                     >
                         <FormattedMessage
                             id='channel_invite.close'
