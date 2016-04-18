@@ -8,9 +8,11 @@ import (
 )
 
 type Members struct {
-	TeamId string `json:"team_id"`
-	Email  string `json:"email"`
-	Type   string `json:"type"`
+	TeamId    string `json:"team_id"`
+	Email     string `json:"email"`
+	Type      string `json:"type"`
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
 }
 
 type MembersSlice []*Members
