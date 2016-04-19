@@ -25,12 +25,14 @@ export default class ChannelInviteModal extends React.Component {
         this.hideCopyLink = this.hideCopyLink.bind(this);
         this.hideCancelButton = this.hideCancelButton.bind(this);
         this.closeButton = this.closeButton.bind(this);
+        this.copyLink = this.copyLink.bind(this);
 
         // the state gets populated when the modal is shown
         this.state = {
             loading: true,
             showCancelButton: false,
-            showCopyButton: false
+            showCopyButton: false,
+            copiedLink: false
         };
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -153,9 +155,27 @@ export default class ChannelInviteModal extends React.Component {
 
     closeButton() {
         this.setState({
-            showCopyButton: false
+            showCopyButton: false,
+            copiedLink: false
         });
         this.props.onHide();
+    }
+
+    copyLink() {
+        this.props.onHide();
+        var copyTextarea = $(ReactDOM.findDOMNode(this.refs.textarea));
+        copyTextarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            if (successful) {
+                this.setState({copiedLink: true});
+            } else {
+                this.setState({copiedLink: false});
+            }
+        } catch (err) {
+            this.setState({copiedLink: false});
+        }
     }
 
     createInviteButton({user}) {
@@ -192,6 +212,19 @@ export default class ChannelInviteModal extends React.Component {
                         defaultMessage='Copy Link'
                     />
                 </button>
+            );
+        }
+
+        var copyLinkConfirm = null;
+        if (this.state.copiedLink) {
+            copyLinkConfirm = (
+                <p className='alert alert-success copy-link-confirm'>
+                    <i className='fa fa-check'></i>
+                    <FormattedMessage
+                        id='channel_modal.clipboard'
+                        defaultMessage=' Link copied to clipboard.'
+                    />
+                </p>
             );
         }
 

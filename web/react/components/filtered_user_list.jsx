@@ -31,8 +31,6 @@ class FilteredUserList extends React.Component {
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
         this.pillClicked = this.pillClicked.bind(this);
-        this.loadMoreMember = this.loadMoreMember.bind(this);
-
         // var invite =[];
 
         this.state = {
@@ -52,6 +50,8 @@ class FilteredUserList extends React.Component {
         this.addedList = [];
         this.recently_added_arr = [];
         this.recently_invited_arr = [];
+        this.limitedRecentlyAdded = [];
+        this.limitedRecentlyInvited = [];
     }
 
     componentWillMount() {
@@ -62,19 +62,27 @@ class FilteredUserList extends React.Component {
                 this.setState({
                     inviteData: success
                 }, () => {
+                    const invitedStates = [];
+                    const addedStates = [];
                     this.state.inviteData.forEach((data, index) => {
                         if (data.type === 'invited') {
                             this.recently_invited_arr.push(data);
-                            this.state.invitedState[index] = false;
+                            invitedStates[index] = false;
+                            this.setState({
+                                invitedState: invitedStates
+                            });
                         }
                         if (data.type === 'added') {
                             this.recently_added_arr.push(data);
-                            this.state.addedState[index] = false;
+                            addedStates[index] = false;
+                            this.setState({
+                                addedState: addedStates
+                            });
                         }
                     });
                 });
             },
-            (err) => {
+            () => {
                // console.log(err);
             }
         );
@@ -107,12 +115,12 @@ class FilteredUserList extends React.Component {
     }
 
     toggleCheckboxInvited(checkedIndex, event) {
+        let checkedInfo;
         if (this.state.checkAllInvited) {
-            this.state.checkAllInvited = !this.state.checkAllInvited;
+            checkedInfo = !this.state.checkAllInvited;
         }
 
-        let value = event.target.value;
-        this.state.invitedState[checkedIndex] = event.target.checked;
+        const value = event.target.value;
 
         if (event.target.checked) {
             this.invitedList.push(value);
@@ -122,19 +130,18 @@ class FilteredUserList extends React.Component {
         }
 
         this.setState({
-            checkAllInvited: this.state.checkAllInvited,
-            invitedState: this.state.invitedState
+            checkAllInvited: checkedInfo,
+            'invitedState[checkedIndex]': event.target.checked
         });
     }
 
     toggleCheckboxAdded(checkedIndex, event) {
+        let checkedInfo;
         if (this.state.checkAllAdded) {
-            this.state.checkAllAdded = !this.state.checkAllAdded;
+            checkedInfo = !this.state.checkAllAdded;
         }
 
-        let value = event.target.value;
-
-        this.state.addedState[checkedIndex] = event.target.checked;
+        const value = event.target.value;
 
         if (event.target.checked) {
             this.addedList.push(value);
@@ -144,57 +151,57 @@ class FilteredUserList extends React.Component {
         }
 
         this.setState({
-            checkAllAdded: this.state.checkAllAdded,
-            addedState: this.state.addedState
+            checkAllAdded: checkedInfo,
+            'addedState[checkedIndex]': event.target.checked
         });
     }
 
     selectAllInvited(event) {
-        const invitedState = [];
+        const invitedStates = [];
         this.invitedList = [];
 
         if (event.target.checked) {
             this.state.inviteData.forEach((data, index) => {
                 if (data.type === 'invited') {
-                    invitedState[index] = true;
+                    invitedStates[index] = true;
                     this.invitedList.push(data.email);
                 }
             });
         } else {
             this.state.inviteData.forEach((data, index) => {
                 if (data.type === 'invited') {
-                    invitedState[index] = false;
+                    invitedStates[index] = false;
                 }
             });
         }
 
         this.setState({
             checkAllInvited: event.target.checked,
-            invitedState: invitedState
+            invitedState: invitedStates
         });
     }
 
     selectAllAdded(event) {
-        let addedState = [];
+        const addedStates = [];
         this.addedList = [];
         if (event.target.checked) {
             this.state.inviteData.forEach((data, index) => {
                 if (data.type === 'added') {
-                    addedState[index] = true;
+                    addedStates[index] = true;
                     this.addedList.push(data.email);
                 }
             });
         } else {
             this.state.inviteData.forEach((data, index) => {
                 if (data.type === 'added') {
-                    addedState[index] = false;
+                    addedStates[index] = false;
                 }
             });
         }
 
         this.setState({
             checkAllAdded: event.target.checked,
-            addedState: addedState
+            addedState: addedStates
         });
     }
 
@@ -205,10 +212,9 @@ class FilteredUserList extends React.Component {
         });
         Client.inviteMembersToChannel(
             data,
-            () => {
-                //success
+            () => {//success
             },
-            (err) => {
+            () => {
                 //err
             }
         );
@@ -235,17 +241,12 @@ class FilteredUserList extends React.Component {
 
         Client.inviteMembersToChannel(
             data,
-            () => {
-                //success
+            () => {//success
             },
-            (err) => {
+            () => {
                 //err
             }
         );
-    }
-    loadMoreMember() {
-        // this.invitedList.slice(0, 5);
-        this.setState({limitOfMember: 10});
     }
 
     componentWillReceiveProps(newProps) {
@@ -382,9 +383,6 @@ class FilteredUserList extends React.Component {
                                             );
                                         })
                                     }
-                                    <a href=''
-                                        onClick={this.loadMoreMember}
-                                    >Load more..</a>
                                 </div> : <p>No recently added users :(</p>
                             }
                         </div>
@@ -439,9 +437,6 @@ class FilteredUserList extends React.Component {
                                             );
                                         })
                                     }
-                                    <a href=''
-                                        onClick={this.loadMoreMember}
-                                    >Load more..</a>
                                 </div> : <div>No recently invited users :(</div>
                             }
                         </div>
@@ -453,7 +448,7 @@ class FilteredUserList extends React.Component {
                                 className='form-control no-resize min-height'
                                 readOnly='true'
                                 ref='textarea'
-                                value={this.props.link}
+                                value='qwerty'
                             />
                         </div>
                     </div>
@@ -484,7 +479,10 @@ FilteredUserList.propTypes = {
     intl: intlShape.isRequired,
     users: React.PropTypes.arrayOf(React.PropTypes.object),
     actions: React.PropTypes.arrayOf(React.PropTypes.func),
-    style: React.PropTypes.object
+    style: React.PropTypes.object,
+    showCopyLink: React.PropTypes.func.isRequired,
+    hideCopyLink: React.PropTypes.func.isRequired,
+    showCancel: React.PropTypes.func.isRequired
 };
 
 export default injectIntl(FilteredUserList);
