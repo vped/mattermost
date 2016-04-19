@@ -554,6 +554,41 @@ export function getMe(success, error) {
     return currentUser;
 }
 
+export function recentlyInvitedAndAdded(success, error) {
+    $.ajax({
+        url: '/api/v1/members/list',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'GET',
+        success: function onSuccess(data, textStatus, xhr) {
+            success(data, textStatus, xhr);
+        },
+        error: function onError(xhr, status, err) {
+            if (error) {
+                var e = handleError('recentlyInvitedAndAdded', xhr, status, err);
+                error(e);
+            }
+        }
+    });
+}
+
+export function inviteMembersToChannel(data, success, error){
+    $.ajax({
+        url: '/api/v1/members/invite',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify(data),
+        success,
+        error: function onError(xhr, status, err) {
+            var e = handleError('inviteMembersToChannel', xhr, status, err);
+            error(e);
+        }
+    });
+
+    track('api', 'api_channel_invite_members');
+}
+
 export function inviteMembers(data, success, error) {
     $.ajax({
         url: '/api/v1/teams/invite_members',

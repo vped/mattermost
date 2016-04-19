@@ -31,6 +31,7 @@ class FilteredUserList extends React.Component {
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
         this.pillClicked = this.pillClicked.bind(this);
+        this.loadMoreMember = this.loadMoreMember.bind(this);
 
         // var invite =[];
 
@@ -43,7 +44,8 @@ class FilteredUserList extends React.Component {
             invitedState: [],
             addedState: [],
             checkAllInvited: false,
-            checkAllAdded: false
+            checkAllAdded: false,
+            limitOfMember: 3
         };
 
         this.invitedList = [];
@@ -53,7 +55,9 @@ class FilteredUserList extends React.Component {
     }
 
     componentWillMount() {
+        $(ReactDOM.findDOMNode(this.refs.userList)).perfectScrollbar();
         Client.recentlyInvitedAndAdded(
+
             (success) => {
                 this.setState({
                     inviteData: success
@@ -71,13 +75,9 @@ class FilteredUserList extends React.Component {
                 });
             },
             (err) => {
-                console.log(err);
+               // console.log(err);
             }
         );
-    }
-
-    componentDidMount() {
-        $(ReactDOM.findDOMNode(this.refs.userList)).perfectScrollbar();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -139,7 +139,7 @@ class FilteredUserList extends React.Component {
         if (event.target.checked) {
             this.addedList.push(value);
         } else {
-            let index = this.addedList.indexOf(value);
+            const index = this.addedList.indexOf(value);
             this.addedList.splice(index, 1);
         }
 
@@ -150,7 +150,7 @@ class FilteredUserList extends React.Component {
     }
 
     selectAllInvited(event) {
-        let invitedState = [];
+        const invitedState = [];
         this.invitedList = [];
 
         if (event.target.checked) {
@@ -199,40 +199,53 @@ class FilteredUserList extends React.Component {
     }
 
     inviteAddedMember() {
-        // Client.inviteMembersToChannel(
-        //     data,
-        //     (success) => {
-        //         //success
-        //     },
-        //     (err) => {
-        //         //err
-        //     }
-        // );
+        const data = {invites: []};
+        this.addedList.forEach((mail) => {
+            data.invites.push({email: mail});
+        });
+        Client.inviteMembersToChannel(
+            data,
+            () => {
+                //success
+            },
+            (err) => {
+                //err
+            }
+        );
     }
 
     inviteSelected() {
-        // let email = [], invites = [], textEmail
-        // textEmail = $('#recently_invited_email').val();
-        // if (textEmail) {
-        //     // email = $('#recently_invited_email').val().split(/\n/);
-        //     email = $('#recently_invited_email').val().split(/[ , ]+/);
-        // }
+        let emailList;
+        const joinAllArray = [];
+        const textEmail = $('#recently_invited_email').val();
+        if (textEmail) {
+            emailList = textEmail.split(/,|;| |\n/);
+        }
+        emailList = this.invitedList.concat(emailList);
 
-        // let joinAllArray = [];
+        for (let i = 0; i < emailList.length; i++) {
+            if (/\S/.test(emailList[i])) {
+                joinAllArray.push($.trim(emailList[i]));
+            }
+        }
+        const data = {invites: []};
+        joinAllArray.forEach((mail) => {
+            data.invites.push({email: mail});
+        });
 
-        // let joinAllArray = this.invitedList.concat(email);
-        // let data = {};
-        // data.invites = invites;
-
-        // Client.inviteMembersToChannel(
-        //     data,
-        //     (success) => {
-        //         //success
-        //     },
-        //     (err) => {
-        //         //err
-        //     }
-        // );
+        Client.inviteMembersToChannel(
+            data,
+            () => {
+                //success
+            },
+            (err) => {
+                //err
+            }
+        );
+    }
+    loadMoreMember() {
+        // this.invitedList.slice(0, 5);
+        this.setState({limitOfMember: 10});
     }
 
     componentWillReceiveProps(newProps) {
@@ -247,7 +260,6 @@ class FilteredUserList extends React.Component {
 
     render() {
         const {formatMessage} = this.props.intl;
-
         let users = this.props.users;
         if (this.state.filter) {
             const filter = this.state.filter.toLowerCase();
@@ -370,6 +382,9 @@ class FilteredUserList extends React.Component {
                                             );
                                         })
                                     }
+                                    <a href=''
+                                        onClick={this.loadMoreMember}
+                                    >Load more..</a>
                                 </div> : <p>No recently added users :(</p>
                             }
                         </div>
@@ -424,6 +439,9 @@ class FilteredUserList extends React.Component {
                                             );
                                         })
                                     }
+                                    <a href=''
+                                        onClick={this.loadMoreMember}
+                                    >Load more..</a>
                                 </div> : <div>No recently invited users :(</div>
                             }
                         </div>
