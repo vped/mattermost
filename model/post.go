@@ -37,6 +37,7 @@ type Post struct {
 	PendingPostId string          `json:"pending_post_id" db:"-"`
 	Liked         string          `json:"liked"`
 	Unliked       string          `json:"unliked"`
+	UsersLiked    StringArray     `json:"users_liked"`
 }
 
 type PostLike struct {
