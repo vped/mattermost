@@ -312,7 +312,7 @@ class FilteredUserList extends React.Component {
                     <ul className='nav nav-pills'>
                         <li className='pill-list'>
                             <a data-toggle='pill'
-                                href='#recenty_added'
+                                href='#recently_added'
                                 onClick={this.pillClicked.bind(this, 'added')}
                             >Recently Added</a></li>
                         <li className='pill-list'>
@@ -332,7 +332,7 @@ class FilteredUserList extends React.Component {
 
                     }
                     <div className='tab-content'>
-                        <div id='recenty_added'
+                        <div id='recently_added'
                             className='tab-pane fade in'
                         >
                             {this.recently_added_arr && this.recently_added_arr.length ?
