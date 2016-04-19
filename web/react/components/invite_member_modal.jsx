@@ -118,7 +118,7 @@ class InviteMemberModal extends React.Component {
         }
         var emails = [];
         if ($('#addManyPeople').val()) {
-            emails = $('#addManyPeople').val().split('\n');
+            emails = $('#addManyPeople').val().split(/,|;| |\n/);
         }
 
         var bulkEmails = 0;
