@@ -580,8 +580,23 @@ func (s SqlPostStore) getRootPosts(channelId string, offset int, limit int) Stor
 	go func() {
 		result := StoreResult{}
 
+		query := `
+			SELECT
+				Posts.*,
+				ARRAY_TO_JSON(array(SELECT userid FROM postslikes WHERE Posts.id = postslikes.postid)) AS UsersLiked
+			FROM
+				Posts
+			WHERE
+				Posts.ChannelId = :ChannelId
+			AND
+				Posts.DeleteAt = 0
+			ORDER BY
+				Posts.CreateAt DESC
+			LIMIT :Limit OFFSET :Offset
+		`
+
 		var posts []*model.Post
-		_, err := s.GetReplica().Select(&posts, "SELECT * FROM Posts WHERE ChannelId = :ChannelId AND DeleteAt = 0 ORDER BY CreateAt DESC LIMIT :Limit OFFSET :Offset", map[string]interface{}{"ChannelId": channelId, "Offset": offset, "Limit": limit})
+		_, err := s.GetReplica().Select(&posts, query, map[string]interface{}{"ChannelId": channelId, "Offset": offset, "Limit": limit})
 		if err != nil {
 			result.Err = model.NewLocAppError("SqlPostStore.GetLinearPosts", "store.sql_post.get_root_posts.app_error", nil, "channelId="+channelId+err.Error())
 		} else {
