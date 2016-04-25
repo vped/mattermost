@@ -31,7 +31,6 @@ class FilteredUserList extends React.Component {
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
         this.pillClicked = this.pillClicked.bind(this);
-        // var invite =[];
 
         this.state = {
             filter: '',
@@ -322,8 +321,8 @@ class FilteredUserList extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <ul className='nav nav-pills'>
-                        <li className='pill-list'>
+                    <ul className='team-nav nav nav-pills'>
+                        <li className='pill-list modal btn.btn-default'>
                             <a data-toggle='pill'
                                 href='#recently_added'
                                 onClick={this.pillClicked.bind(this, 'added')}
@@ -390,18 +389,19 @@ class FilteredUserList extends React.Component {
                             className='tab-pane col fade'
                         >
                             <div className='col-md-12'>
-                                <div className='col-md-9'>
+                                <div className='col-md-10'>
                                     <textarea id='recently_invited_email'
                                         rows='4'
                                         cols='50'
+                                        className='form-control'
                                         placeholder={formatMessage(holders.multipleEmail)}
                                     >
                                     </textarea>
                                 </div>
-                                <div className='col-md-3'>
+                                <div className='col-md-2'>
                                     <button type='button'
                                         onClick={this.inviteSelected.bind(this)}
-                                        className='btn btn-primary btn-lg'
+                                        className='btn btn-primary'
                                     >
                                         <FormattedMessage
                                             id='filtered_user_list.send'

@@ -217,9 +217,11 @@ class InviteMemberModal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        console.log(' this.setState({});')
         if (!prevState.show && this.state.show) {
             $(ReactDOM.findDOMNode(this.refs.modalBody)).css('max-height', $(window).height() - 200);
             if ($(window).width() > 768) {
+                console.log('perfectScrollbar')
                 $(ReactDOM.findDOMNode(this.refs.modalBody)).perfectScrollbar();
             }
         }
@@ -229,6 +231,7 @@ class InviteMemberModal extends React.Component {
         var count = this.state.idCount + 1;
         var inviteIds = this.state.inviteIds;
         inviteIds.push(count);
+
         this.setState({inviteIds: inviteIds, idCount: count});
     }
 
