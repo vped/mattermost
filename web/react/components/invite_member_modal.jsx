@@ -68,7 +68,8 @@ class InviteMemberModal extends React.Component {
             showConfirmModal: false,
             isSendingEmails: false,
             multipleInvite: false,
-            addAnotherArea: true
+            addAnotherArea: true,
+            bulkEmailsError: false
         };
     }
 
@@ -94,7 +95,7 @@ class InviteMemberModal extends React.Component {
         var inviteIds = this.state.inviteIds;
         var count = inviteIds.length;
         var invites = [];
-        var emailErrors = this.state.emailErrors;
+        let emailErrors = this.state.emailErrors;
         var firstNameErrors = this.state.firstNameErrors;
         var lastNameErrors = this.state.lastNameErrors;
         var valid = true;
@@ -117,8 +118,9 @@ class InviteMemberModal extends React.Component {
             invites.push(invited);
         }
         var emails = [];
-        if ($('#addManyPeople').val()) {
-            emails = $('#addManyPeople').val().split(/,|;| |\n/);
+        const emailValue = this.refs.addManyPeople ? this.refs.addManyPeople.value : '';
+        if (emailValue) {
+            emails = emailValue.split(/,|;| |\n/);
         }
 
         var bulkEmails = 0;
@@ -139,9 +141,10 @@ class InviteMemberModal extends React.Component {
             if (!invite.email || !utils.isEmail(invite.email)) {
                 emailErrors.multiBoxError = this.props.intl.formatMessage(holders.emailError);
                 valid = false;
-                $('#bulkEmailsError').show();
+                this.setState({bulkEmailsError: true});
             } else {
                 emailErrors.multiBoxError = '';
+                this.setState({bulkEmailsError: false});
             }
             invites.push(invite);
         }
@@ -165,7 +168,7 @@ class InviteMemberModal extends React.Component {
             (err) => {
                 if (err.id === 'api.team.invite_members.already.app_error') {
                     emailErrors[err.detailed_error] = err.message;
-                    var emailsAll = $('#addManyPeople').val().split('\n');
+                    var emailsAll = this.refs.addManyPeople.value.split(/,|;| |\n/);
                     if (emailsAll.length > 0 && $('#addManyPeopleArea').is(':visible')) {
                         emailErrors[err.detailed_error] += ': ' + emailsAll[err.detailed_error];
                     }
@@ -217,11 +220,9 @@ class InviteMemberModal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(' this.setState({});')
         if (!prevState.show && this.state.show) {
             $(ReactDOM.findDOMNode(this.refs.modalBody)).css('max-height', $(window).height() - 200);
             if ($(window).width() > 768) {
-                console.log('perfectScrollbar')
                 $(ReactDOM.findDOMNode(this.refs.modalBody)).perfectScrollbar();
             }
         }
@@ -242,7 +243,7 @@ class InviteMemberModal extends React.Component {
 
     clearFields() {
         var inviteIds = this.state.inviteIds;
-        $('#addManyPeople').val('');
+        this.refs.addManyPeople.value = '';
 
         for (var i = 0; i < inviteIds.length; i++) {
             var index = inviteIds[i];
@@ -461,17 +462,20 @@ class InviteMemberModal extends React.Component {
                                 id='addManyPeopleArea'
                                 className='row--invite'
                             >
-                                <div style={{display: 'none'}}
-                                    className='form-group invite has-error'
-                                    id='bulkEmailsError'
-                                >
-                                    <label className='control-label'>{this.state.emailErrors.multiBoxError}</label>
-                                </div>
+                                {this.state.bulkEmailsError ?
+                                    <div className='form-group invite has-error'
+                                        id='bulkEmailsError'
+                                    >
+                                        <label className='control-label'>{this.state.emailErrors.multiBoxError}</label>
+                                    </div> : null
+                                }
                                 <FormattedMessage
                                     id='invite_member.addMultipleEmails'
                                     defaultMessage='Add multiple email addresses'
                                 />
-                            <textarea id='addManyPeople'
+                            <textarea
+                                id='addManyPeople'
+                                ref='addManyPeople'
                                 rows='5'
                                 className='col-sm-12 form-control'
                             >
