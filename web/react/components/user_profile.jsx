@@ -25,6 +25,10 @@ export default class UserProfile extends React.Component {
             $('body').tooltip({selector: '[data-toggle=tooltip]', trigger: 'hover click'});
         }
     }
+
+    componentWillUnmount() {
+        $('body').tooltip({selector: '[data-toggle=tooltip]'}).tooltip('destroy');
+    }
     render() {
         var name = Utils.displayUsername(this.props.user.id);
         if (this.props.overwriteName) {

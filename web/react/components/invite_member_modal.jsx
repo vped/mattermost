@@ -189,7 +189,16 @@ class InviteMemberModal extends React.Component {
 
     handleHide(requireConfirm, cancelClick) {
         if (this.state.multipleInvite && cancelClick) {
-            this.showInitialModal();
+            if (this.refs.addManyPeople.value.trim() !== '' && requireConfirm) {
+                this.setState({
+                    showConfirmModal: true
+                });
+            } else {
+                this.showInitialModal();
+                this.setState({
+                    showConfirmModal: false
+                });
+            }
         } else {
             if (requireConfirm) {
                 var notEmpty = false;
@@ -243,7 +252,9 @@ class InviteMemberModal extends React.Component {
 
     clearFields() {
         var inviteIds = this.state.inviteIds;
-        this.refs.addManyPeople.value = '';
+        if (this.refs.addManyPeople) {
+            this.refs.addManyPeople.value = '';
+        }
 
         for (var i = 0; i < inviteIds.length; i++) {
             var index = inviteIds[i];
