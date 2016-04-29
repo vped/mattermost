@@ -49,14 +49,12 @@ class FilteredUserList extends React.Component {
         this.addedList = [];
         this.recently_added_arr = [];
         this.recently_invited_arr = [];
-        this.limitedRecentlyAdded = [];
-        this.limitedRecentlyInvited = [];
     }
 
     componentWillMount() {
+        //call to get recently added and invited user list. saving members ro separate array
         $(ReactDOM.findDOMNode(this.refs.userList)).perfectScrollbar();
         Client.recentlyInvitedAndAdded(
-
             (success) => {
                 this.setState({
                     inviteData: success
@@ -99,6 +97,7 @@ class FilteredUserList extends React.Component {
         });
     }
 
+    //to hide and show respective footer button
     pillClicked(component) {
         if (component === 'link') {
             this.props.showCopyLink();
@@ -113,6 +112,8 @@ class FilteredUserList extends React.Component {
         this.props.showCancel();
     }
 
+    //This method is for to toggle recently invited member checkbox and get selected/checked value in an array
+
     toggleCheckboxInvited(checkedIndex, event) {
         let checkedInfo;
         if (this.state.checkAllInvited) {
@@ -120,19 +121,23 @@ class FilteredUserList extends React.Component {
         }
 
         const value = event.target.value;
+        const copyInvitedState = this.state.invitedState;
+        copyInvitedState[checkedIndex] = event.target.checked;
 
         if (event.target.checked) {
             this.invitedList.push(value);
         } else {
-            let index = this.invitedList.indexOf(value);
+            const index = this.invitedList.indexOf(value);
             this.invitedList.splice(index, 1);
         }
 
         this.setState({
             checkAllInvited: checkedInfo,
-            'invitedState[checkedIndex]': event.target.checked
+            invitedState: copyInvitedState
         });
     }
+
+    //This method is for to toggle recently added checkbox and get selected/checked value in an array
 
     toggleCheckboxAdded(checkedIndex, event) {
         let checkedInfo;
@@ -141,7 +146,8 @@ class FilteredUserList extends React.Component {
         }
 
         const value = event.target.value;
-
+        const copyAddedState = this.state.addedState;
+        copyAddedState[checkedIndex] = event.target.checked;
         if (event.target.checked) {
             this.addedList.push(value);
         } else {
@@ -151,10 +157,12 @@ class FilteredUserList extends React.Component {
 
         this.setState({
             checkAllAdded: checkedInfo,
-            'addedState[checkedIndex]': event.target.checked
+            addedState: copyAddedState
         });
     }
 
+    //This method is for inviting all selected recently invited member to the channel
+    //call for recently invited and recently added are separate.
     selectAllInvited(event) {
         const invitedStates = [];
         this.invitedList = [];
@@ -180,6 +188,7 @@ class FilteredUserList extends React.Component {
         });
     }
 
+    //This method is for inviting all selected recently invited member to the channel
     selectAllAdded(event) {
         const addedStates = [];
         this.addedList = [];
@@ -204,6 +213,7 @@ class FilteredUserList extends React.Component {
         });
     }
 
+    //Api call for sending selected recently added member
     inviteAddedMember() {
         const data = {invites: []};
         this.addedList.forEach((mail) => {
@@ -219,6 +229,7 @@ class FilteredUserList extends React.Component {
         );
     }
 
+    //Api call for sending selected recently invited member
     inviteSelected() {
         let emailList;
         const joinAllArray = [];
@@ -249,6 +260,8 @@ class FilteredUserList extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
+        //Removing active class from tabs
+        //Jquery way need to replaced with react
         if (!newProps.showInitialState) {
             $('#recently_invited, #recently_added,#get_link').removeClass('active');
             $('.pill-list').removeClass('active');
@@ -307,7 +320,7 @@ class FilteredUserList extends React.Component {
                 className='filtered-user-list'
                 style={this.props.style}
             >
-                <div className='filter-row'>
+                <div className='channel-filter-row filter-row '>
                     <div className='col-sm-6'>
                         <input
                             ref='filter'
@@ -321,20 +334,20 @@ class FilteredUserList extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <ul className='team-nav nav nav-pills'>
-                        <li className='pill-list modal btn.btn-default'>
-                            <a data-toggle='pill'
+                    <ul className='team-nav nav nav-tabs'>
+                        <li className='pill-list'>
+                            <a data-toggle='tab'
                                 href='#recently_added'
                                 onClick={this.pillClicked.bind(this, 'added')}
                             >Recently Added</a></li>
                         <li className='pill-list'>
-                            <a data-toggle='pill'
+                            <a data-toggle='tab'
                                 href='#recently_invited'
                                 onClick={this.pillClicked.bind(this, 'invited')}
                             >Recently Invited</a>
                         </li>
                         <li className='pill-list'>
-                            <a data-toggle='pill'
+                            <a data-toggle='tab'
                                 href='#get_link'
                                 onClick={this.pillClicked.bind(this, 'link')}
                             >Get Link</a>
@@ -345,7 +358,7 @@ class FilteredUserList extends React.Component {
                     }
                     <div className='tab-content'>
                         <div id='recently_added'
-                            className='tab-pane fade in'
+                            className='tab-pane fade'
                         >
                             {this.recently_added_arr && this.recently_added_arr.length ?
                                 <div>
@@ -368,16 +381,19 @@ class FilteredUserList extends React.Component {
                                     {
                                         this.recently_added_arr.map((obj, index) => {
                                             return (
-                                                <div className='col-md-4 col-xs-4'
+                                                <div className='col-md-3 col-xs-3'
                                                     key={index}
                                                 >
                                                     <input checked={this.state.addedState[index]}
                                                         type='checkbox'
+                                                        id={index}
                                                         name={obj.email}
                                                         value={obj.email}
                                                         onChange={this.toggleCheckboxAdded.bind(this, index)}
                                                     />
-                                                    {obj.email}
+                                                    <label
+                                                        htmlFor={index}
+                                                    >{obj.email}</label>
                                                 </div>
                                             );
                                         })
@@ -386,30 +402,26 @@ class FilteredUserList extends React.Component {
                             }
                         </div>
                         <div id='recently_invited'
-                            className='tab-pane col fade'
+                            className='tab-pane  fade'
                         >
-                            <div className='col-md-12'>
-                                <div className='col-md-10'>
-                                    <textarea id='recently_invited_email'
-                                        rows='4'
-                                        cols='50'
-                                        className='form-control'
-                                        placeholder={formatMessage(holders.multipleEmail)}
-                                    >
-                                    </textarea>
-                                </div>
-                                <div className='col-md-2'>
-                                    <button type='button'
-                                        onClick={this.inviteSelected.bind(this)}
-                                        className='btn btn-primary'
-                                    >
-                                        <FormattedMessage
-                                            id='filtered_user_list.send'
-                                            defaultMessage='Send'
-                                        />
-                                    </button>
-                                </div>
-                            </div>
+                                <textarea id='recently_invited_email'
+                                    rows='3'
+                                    cols='50'
+                                    className='form-control no-resize'
+                                    placeholder={formatMessage(holders.multipleEmail)}
+                                >
+                                </textarea>
+
+                                <button type='button'
+                                    onClick={this.inviteSelected.bind(this)}
+                                    className='btn btn-primary multiple-invited'
+                                >
+                                    <FormattedMessage
+                                        id='filtered_user_list.send'
+                                        defaultMessage='Send'
+                                    />
+                                </button>
+
                             <br/>
                             <input checked={this.state.checkAllInvited}
                                 onChange={this.selectAllInvited.bind(this)}
@@ -423,16 +435,20 @@ class FilteredUserList extends React.Component {
                                     {
                                         this.recently_invited_arr.map((obj, index) => {
                                             return (
-                                                <div className='col-md-4 col-xs-4'
+                                                <div className='col-md-4 col-xs-4 selectable'
                                                     key={index}
                                                 >
                                                     <input checked={this.state.invitedState[index]}
                                                         type='checkbox'
+                                                        id={index}
+                                                        className='regular-checkbox'
                                                         name={obj.email}
                                                         value={obj.email}
                                                         onChange={this.toggleCheckboxInvited.bind(this, index)}
                                                     />
-                                                    {obj.email}
+                                                    <label
+                                                        htmlFor={index}
+                                                    >{obj.email}</label>
                                                 </div>
                                             );
                                         })

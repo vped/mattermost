@@ -169,6 +169,8 @@ class InviteMemberModal extends React.Component {
                 if (err.id === 'api.team.invite_members.already.app_error') {
                     emailErrors[err.detailed_error] = err.message;
                     var emailsAll = this.refs.addManyPeople.value.split(/,|;| |\n/);
+
+                    /* if (emailsAll.length > 0 && $('#addManyPeopleArea').is(':visible'))*/
                     if (emailsAll.length > 0 && this.state.multipleInvite) {
                         emailErrors[err.detailed_error] += ': ' + emailsAll[err.detailed_error];
                     }
@@ -187,8 +189,9 @@ class InviteMemberModal extends React.Component {
         this.setState({multipleInvite: false, addAnotherArea: true});
     }
 
-    handleHide(requireConfirm, cancelClick) {
-        if (this.state.multipleInvite && cancelClick) {
+    handleHide(requireConfirm) {
+        //For showing confirmmodal in multipleinvite section
+        if (this.state.multipleInvite) {
             if (this.refs.addManyPeople.value.trim() !== '' && requireConfirm) {
                 this.setState({
                     showConfirmModal: true
