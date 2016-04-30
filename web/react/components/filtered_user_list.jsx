@@ -42,7 +42,9 @@ class FilteredUserList extends React.Component {
             addedState: [],
             checkAllInvited: false,
             checkAllAdded: false,
-            limitOfMember: 3
+            tabClicked: false,
+            hideRecentlyAdded: false,
+            hideRecentlyInvited: false
         };
 
         this.invitedList = [];
@@ -110,6 +112,10 @@ class FilteredUserList extends React.Component {
             });
         }
         this.props.showCancel();
+        this.checkLength(true);
+        this.setState({
+            tabClicked: true
+        });
     }
 
     //This method is for to toggle recently invited member checkbox and get selected/checked value in an array
@@ -233,7 +239,7 @@ class FilteredUserList extends React.Component {
     inviteSelected() {
         let emailList;
         const joinAllArray = [];
-        const textEmail = $('#recently_invited_email').val();
+        const textEmail = ReactDOM.findDOMNode(this.refs.recently_invited_email).value;
         if (textEmail) {
             emailList = textEmail.split(/,|;| |\n/);
         }
@@ -266,7 +272,21 @@ class FilteredUserList extends React.Component {
             $('#recently_invited, #recently_added,#get_link').removeClass('active');
             $('.pill-list').removeClass('active');
             this.setState({
-                showAllUsers: true
+                showAllUsers: true,
+                tabClicked: false
+            });
+        }
+    }
+
+    checkLength() {
+        if (this.recently_added_arr && !this.recently_added_arr.length) {
+            this.setState({
+                hideRecentlyAdded: true
+            });
+        }
+        if (this.recently_invited_arr && !this.recently_invited_arr.length) {
+            this.setState({
+                hideRecentlyInvited: true
             });
         }
     }
@@ -356,49 +376,56 @@ class FilteredUserList extends React.Component {
                     {
 
                     }
-                    <div className='tab-content'>
+                    <div className={`tab-content ${this.state.tabClicked === false ? 'hide-tag' : ''}`}>
                         <div id='recently_added'
                             className='tab-pane fade'
                         >
+                            <div className={`all_added ${this.state.hideRecentlyAdded ? 'hide-checkbox' : ''}`}>
+                                <input
+                                    type='checkbox'
+                                    checked={this.state.checkAllAdded}
+                                    onChange={this.selectAllAdded.bind(this)}
+                                    name='select_all'
+                                    value='all_added'
+                                    id='all_added'
+                                />
+                                <label htmlFor='all_added'>Select All</label>
+                                <br/>
+                                <button
+                                    type='button'
+                                    className='recently_added_btn btn btn-primary'
+                                    onClick={this.inviteAddedMember.bind(this)}
+                                >
+                                <FormattedMessage
+                                    id='filtered_user_list.add'
+                                    defaultMessage='Add'
+                                />
+                                </button>
+                             </div>
+                            <br/>
                             {this.recently_added_arr && this.recently_added_arr.length ?
                                 <div>
-                                    <input
-                                        type='checkbox'
-                                        checked={this.state.checkAllAdded}
-                                        onChange={this.selectAllAdded.bind(this)}
-                                        name='select_all'
-                                        value='all_users'
-                                    />
-                                    <FormattedMessage
-                                        id='filtered_user_list.selectAll'
-                                        defaultMessage='Select All'
-                                    />
-                                    <button
-                                        type='button'
-                                        className='btn btn-primary btn-lg'
-                                        onClick={this.inviteAddedMember.bind(this)}
-                                    >Add</button>
-                                    {
-                                        this.recently_added_arr.map((obj, index) => {
-                                            return (
-                                                <div className='col-md-3 col-xs-3'
-                                                    key={index}
-                                                >
-                                                    <input checked={this.state.addedState[index]}
-                                                        type='checkbox'
-                                                        id={index}
-                                                        name={obj.email}
-                                                        value={obj.email}
-                                                        onChange={this.toggleCheckboxAdded.bind(this, index)}
-                                                    />
-                                                    <label
-                                                        htmlFor={index}
-                                                    >{obj.email}</label>
-                                                </div>
-                                            );
-                                        })
-                                    }
-                                </div> : <p>No recently added users :(</p>
+                                {
+                                    this.recently_added_arr.slice(0, 20).map((obj, index) => {
+                                        return (
+                                            <div className='col-md-4 col-xs-4'
+                                                key={index}
+                                            >
+                                                <input checked={this.state.addedState[index]}
+                                                    type='checkbox'
+                                                    id={index}
+                                                    name={obj.email}
+                                                    value={obj.email}
+                                                    onChange={this.toggleCheckboxAdded.bind(this, index)}
+                                                />
+                                                <label
+                                                    htmlFor={index}
+                                                >{obj.email}</label>
+                                            </div>
+                                        );
+                                    })
+                                }
+                                </div> : <div>No recently added member:)</div>
                             }
                         </div>
                         <div id='recently_invited'
@@ -407,6 +434,7 @@ class FilteredUserList extends React.Component {
                                 <textarea id='recently_invited_email'
                                     rows='3'
                                     cols='50'
+                                    ref='recently_invited_email'
                                     className='form-control no-resize'
                                     placeholder={formatMessage(holders.multipleEmail)}
                                 >
@@ -423,17 +451,21 @@ class FilteredUserList extends React.Component {
                                 </button>
 
                             <br/>
+                        <div className={`aa ${this.state.hideRecentlyInvited ? 'hide-checkbox' : ''}`}>
                             <input checked={this.state.checkAllInvited}
                                 onChange={this.selectAllInvited.bind(this)}
                                 type='checkbox'
                                 name='select_all'
                                 value='all_users'
-                            /> Select All
+                                id='all-invited'
+                            />
+                            <label htmlFor='all-invited'>Select All</label>
+                        </div>
 
                             {this.recently_invited_arr && this.recently_invited_arr.length ?
                                 <div>
                                     {
-                                        this.recently_invited_arr.map((obj, index) => {
+                                        this.recently_invited_arr.slice(0, 20).map((obj, index) => {
                                             return (
                                                 <div className='col-md-4 col-xs-4 selectable'
                                                     key={index}
@@ -441,7 +473,6 @@ class FilteredUserList extends React.Component {
                                                     <input checked={this.state.invitedState[index]}
                                                         type='checkbox'
                                                         id={index}
-                                                        className='regular-checkbox'
                                                         name={obj.email}
                                                         value={obj.email}
                                                         onChange={this.toggleCheckboxInvited.bind(this, index)}
