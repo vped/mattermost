@@ -67,17 +67,15 @@ class FilteredUserList extends React.Component {
                         if (data.type === 'invited') {
                             this.recently_invited_arr.push(data);
                             invitedStates[index] = false;
-                            this.setState({
-                                invitedState: invitedStates
-                            });
                         }
                         if (data.type === 'added') {
                             this.recently_added_arr.push(data);
                             addedStates[index] = false;
-                            this.setState({
-                                addedState: addedStates
-                            });
                         }
+                    });
+                    this.setState({
+                        invitedState: invitedStates,
+                        addedState: addedStates
                     });
                 });
             },
@@ -91,6 +89,8 @@ class FilteredUserList extends React.Component {
         if (prevState.filter !== this.state.filter) {
             $(ReactDOM.findDOMNode(this.refs.userList)).scrollTop(0);
         }
+        $('.invited-label', ReactDOM.findDOMNode(this)).tooltip();
+        $('.added-label', ReactDOM.findDOMNode(this)).tooltip();
     }
 
     handleFilterChange(e) {
@@ -420,6 +420,8 @@ class FilteredUserList extends React.Component {
                                                 />
                                                 <label
                                                     htmlFor={index}
+                                                    className='added-label'
+                                                    title={obj.email}
                                                 >{obj.email}</label>
                                             </div>
                                         );
@@ -465,7 +467,15 @@ class FilteredUserList extends React.Component {
                             {this.recently_invited_arr && this.recently_invited_arr.length ?
                                 <div>
                                     {
-                                        this.recently_invited_arr.slice(0, 20).map((obj, index) => {
+                                        this.recently_invited_arr.filter((user) => {
+                                            // console.log('this.state.searchMembers',this.state.searchMembers);
+                                            const regex = new RegExp('dd@tt.ll' , 'gi');
+                                            console.log('regex',regex);
+                                            console.log('user.email',user);
+                                            console.log('regex2', user.email.match(/dd/g));
+
+                                            return this.state.searchMembers ? (user.email.match(regex)) : user;
+                                        }).map((obj, index) => {
                                             return (
                                                 <div className='col-md-4 col-xs-4 selectable'
                                                     key={index}
@@ -479,6 +489,8 @@ class FilteredUserList extends React.Component {
                                                     />
                                                     <label
                                                         htmlFor={index}
+                                                        className='invited-label'
+                                                        title={obj.email}
                                                     >{obj.email}</label>
                                                 </div>
                                             );

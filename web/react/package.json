@@ -5,6 +5,7 @@
   "dependencies": {
     "autolinker": "0.24.0",
     "fastclick": "1.0.6",
+    "filepicker-js": "^2.4.8",
     "flux": "2.1.1",
     "highlight.js": "9.1.0",
     "keymirror": "0.1.1",

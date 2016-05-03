@@ -12,7 +12,6 @@
   display: none;
 }
 
-
 .recently_added_btn {
   float: right;
 }
@@ -57,14 +56,6 @@ border-bottom: 2px solid #2389d7 !important;
   margin-top: 20px;
   min-width: 300px;
 }
-//.selectable>.check-invited {
-//  //display:inline-block;
-// //margin-left: 5px;
-// // width: 85%;
-//  text-overflow: ellipsis;
-// // white-space: nowrap;
-//  padding:0 0 0 5px;
-//}
 
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
@@ -76,6 +67,9 @@ border-bottom: 2px solid #2389d7 !important;
   position: relative;
   padding-left: 25px;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* checkbox aspect */
