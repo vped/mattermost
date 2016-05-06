@@ -10,6 +10,41 @@
 		padding-right: 42px;
 	}
 }
+.result-tab-section {
+  margin-left: 15px;
+}
+.results-data P {
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid black;
+  text-align: center;
+  min-height: 50px;
+}
+.result-tab-section .nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover{
+  background-color: transparent!important;
+  color: black;
+
+}
+.result-tab-section .nav-pills>li {
+  border-bottom: 4px solid #e9e9e9;
+}
+
+.result-tab-section .nav-pills>li:hover {
+  border-bottom: 4px solid gainsboro;
+}
+
+.result-tab-section .nav-pills>li.active {
+  border-bottom: 4px solid #2f81b7;
+}
+
+.result-tab-section ul.nav-pills {
+  border-radius: 4px;
+  margin: 10px 0px 10px -10px !important;
+  height: 36px;
+}
+
 .search__clear {
 	display: none;
 	position: absolute;
@@ -63,12 +98,16 @@
 		@include border-radius(2px);
 		width: 300px;
 	}
+  	.input-group-addon {
+	  border: 0px solid #ccc;
+	  cursor: pointer;
+	}
 	.sidebar--right & {
-		width: 100%;
+		width: 90%;
 	}
 	.search-bar {
 		height: 40px;
-		padding-right: 30px;
+		padding-right: 5px;
 		box-shadow: none;
 		.search-bar__container & {
 			height: 30px;

@@ -130,7 +130,9 @@ class SearchBar extends React.Component {
         }
     }
     handleSubmit(e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
         this.performSearch(this.state.searchTerm.trim());
     }
 
@@ -175,6 +177,7 @@ class SearchBar extends React.Component {
                         className='form-control search-bar'
                         placeholder={this.props.intl.formatMessage(holders.search)}
                         value={this.state.searchTerm}
+                        onSubmit={this.handleSubmit}
                         onFocus={this.handleUserFocus}
                         onBlur={this.handleUserBlur}
                         onUserInput={this.handleUserInput}

@@ -147,6 +147,15 @@ export default class ChannelHeader extends React.Component {
                 />
             </Tooltip>
         );
+        const likeTooltip = (
+            <Tooltip id='likeTooltip'>
+                <FormattedMessage
+                    id='channel_header.likes'
+                    defaultMessage='Like'
+                />
+            </Tooltip>
+        );
+
         const popoverContent = (
             <Popover
                 id='hader-popover'
@@ -472,6 +481,18 @@ export default class ChannelHeader extends React.Component {
                                         </a>
                                     </OverlayTrigger>
                                 </div>
+                            </th>
+                            <th>
+                                <div>
+                                    <OverlayTrigger
+                                        delayShow={Constants.OVERLAY_TIME_DELAY}
+                                        placement='bottom'
+                                        overlay={likeTooltip}
+                                    >
+                                        <i className='results-heart fa fa-heart-o'></i>
+                                    </OverlayTrigger>
+                                </div>
+
                             </th>
                         </tr>
                     </tbody>

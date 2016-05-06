@@ -537,6 +537,7 @@
   "channel_header.channelHeader": "Set Channel Header...",
   "channel_header.delete": "Delete {term}...",
   "channel_header.group": "Group",
+  "channel_header.likes":"Likes",
   "channel_header.leave": "Leave {term}",
   "channel_header.manageMembers": "Manage Members",
   "channel_header.notificationPreferences": "Notification Preferences",

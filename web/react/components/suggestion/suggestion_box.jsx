@@ -110,6 +110,9 @@ export default class SuggestionBox extends React.Component {
             provider.handlePretextChanged(this.suggestionId, pretext);
         }
     }
+    performSearch() {
+        this.props.onSubmit();
+    }
 
     render() {
         const newProps = Object.assign({}, this.props, {
@@ -120,11 +123,25 @@ export default class SuggestionBox extends React.Component {
         let textbox = null;
         if (this.props.type === 'input') {
             textbox = (
-                <input
-                    ref='textbox'
-                    type='text'
-                    {...newProps}
-                />
+                <div>
+                    <div className='input-group'>
+                        <input ref='textbox'
+                            type='text'
+                            className='form-control'
+                            placeholder='Username'
+                            aria-describedby='basic-addon1'
+                            {...newProps}
+                        />
+                        <span
+                            className='input-group-addon'
+                            id='basic-addon1'
+                        >
+                            <i onClick={this.performSearch.bind(this)}
+                                className='fa fa-search'
+                            ></i>
+                        </span>
+                    </div>
+            </div>
             );
         } else if (this.props.type === 'textarea') {
             textbox = (
@@ -155,6 +172,7 @@ SuggestionBox.propTypes = {
     type: React.PropTypes.oneOf(['input', 'textarea']).isRequired,
     value: React.PropTypes.string.isRequired,
     onUserInput: React.PropTypes.func,
+    onSubmit: React.PropTypes.func,
     providers: React.PropTypes.arrayOf(React.PropTypes.object),
 
     // explicitly name any input event handlers we override and need to manually call

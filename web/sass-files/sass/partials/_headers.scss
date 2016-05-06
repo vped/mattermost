@@ -292,6 +292,27 @@
 		top: 1px;
 	}
 }
+.results-heart {
+  position: absolute;
+  right: -371px;
+  top: 19px;
+  width: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  @include opacity(0.6);
+  @include single-transition(all, 0.1s, ease-in);
+  &:hover {
+	@include opacity(1);
+	transition: 0.9s;
+	transform: scaleY(1.3);
+  }
+  &:focus {
+	color: inherit;
+  }
+}
+
 
 .channel-header__links {
 	font-family: 'Open Sans', sans-serif;
@@ -302,9 +323,10 @@
 	font-size: 22px;
 	.channel__wrap.move--left & {
 		position: absolute;
-		right: -400px;
+		right: -360px;
 		top: 14px;
 	}
+
 	> a {
 		color: inherit;
 		text-decoration: none;
