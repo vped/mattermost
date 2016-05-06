@@ -110,6 +110,8 @@ export default class SuggestionBox extends React.Component {
             provider.handlePretextChanged(this.suggestionId, pretext);
         }
     }
+
+    //Calling parent search method
     performSearch() {
         this.props.onSubmit();
     }

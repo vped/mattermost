@@ -36,7 +36,9 @@ class TeamSettingsModal extends React.Component {
     componentDidMount() {
         const modal = $(ReactDOM.findDOMNode(this.refs.modal));
 
-        modal.on('click', '.modal-back', function handleBackClick() {
+        //removing jquery listener on
+
+        modal.off('click.modal-click').on('click.modal-click', '.modal-back', function handleBackClick() {
             $(this).closest('.modal-dialog').removeClass('display--content');
             $(this).closest('.modal-dialog').find('.settings-table .nav li.active').removeClass('active');
         });

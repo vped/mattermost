@@ -43,6 +43,8 @@ class FilteredUserList extends React.Component {
             checkAllInvited: false,
             checkAllAdded: false,
             tabClicked: false,
+            addedSection: false,
+            invitedSection: false,
             hideRecentlyAdded: false,
             hideRecentlyInvited: false
         };
@@ -101,8 +103,25 @@ class FilteredUserList extends React.Component {
 
     //to hide and show respective footer button
     pillClicked(component) {
+        if (component === 'added') {
+            this.setState({
+                invitedSection: false,
+                addedSection: true
+            });
+        }
+        if (component === 'invited') {
+            this.setState({
+                invitedSection: true,
+                addedSection: false
+            });
+        }
+
         if (component === 'link') {
             this.props.showCopyLink();
+            this.setState({
+                invitedSection: false,
+                addedSection: false
+            });
         } else {
             this.props.hideCopyLink();
         }
@@ -306,33 +325,108 @@ class FilteredUserList extends React.Component {
         }
 
         let count;
-        if (users.length === this.props.users.length) {
-            count = (
-                <FormattedMessage
-                    id='filtered_user_list.count'
-                    defaultMessage='{count} {count, plural,
-                        one {member}
-                        other {members}
-                    }'
-                    values={{
-                        count: users.length
-                    }}
-                />
-            );
+
+        //For tab section
+        if (this.state.tabClicked) {
+            if (this.state.invitedSection) {
+                const invited = this.recently_invited_arr.filter((user) => {
+                    const regex = new RegExp(this.state.filter, 'gi');
+                    return this.state.filter ? (user.email.match(regex)) : user;
+                });
+                if (invited.length === this.recently_invited_arr.length) {
+                    count = (
+                        <FormattedMessage
+                            id='filtered_user_list.count'
+                            defaultMessage='{count} {count, plural,
+                                one {member}
+                                other {members}
+                        }'
+                            values={{
+                                count: invited.length
+                            }}
+                        />
+                    );
+                } else {
+                    count = (
+                        <FormattedMessage
+                            id='filtered_user_list.countTotal'
+                            defaultMessage='{count} {count, plural,
+                                one {member}
+                                other {members}
+                            } of {total} Total'
+                            values={{
+                                count: invited.length,
+                                total: this.recently_invited_arr.length
+                            }}
+                        />
+                    );
+                }
+            } else if (this.state.addedSection) {
+                const added = this.recently_added_arr.filter((user) => {
+                    const regex = new RegExp(this.state.filter, 'gi');
+                    return this.state.filter ? (user.email.match(regex)) : user;
+                });
+
+                if (added.length === this.recently_added_arr.length) {
+                    count = (
+                        <FormattedMessage
+                            id='filtered_user_list.count'
+                            defaultMessage='{count} {count, plural,
+                                one {member}
+                                other {members}
+                        }'
+                            values={{
+                                count: added.length
+                            }}
+                        />
+                    );
+                } else {
+                    count = (
+                        <FormattedMessage
+                            id='filtered_user_list.countTotal'
+                            defaultMessage='{count} {count, plural,
+                                one {member}
+                                other {members}
+                            } of {total} Total'
+                            values={{
+                                count: added.length,
+                                total: this.recently_added_arr.length
+                            }}
+                        />
+                    );
+                }
+            }
         } else {
-            count = (
-                <FormattedMessage
-                    id='filtered_user_list.countTotal'
-                    defaultMessage='{count} {count, plural,
-                        one {member}
-                        other {members}
-                    } of {total} Total'
-                    values={{
-                        count: users.length,
-                        total: this.props.users.length
-                    }}
-                />
-            );
+            //user section
+            const len = users.length;
+            if (len === this.props.users.length) {
+                count = (
+                    <FormattedMessage
+                        id='filtered_user_list.count'
+                        defaultMessage='{count} {count, plural,
+                     one {member}
+                     other {members}
+                    }'
+                        values={{
+                            count: users.length
+                        }}
+                    />
+                );
+            } else {
+                count = (
+                    <FormattedMessage
+                        id='filtered_user_list.countTotal'
+                        defaultMessage='{count} {count, plural,
+                    one {member}
+                    other {members}
+                } of {total} Total'
+                        values={{
+                            count: users.length,
+                            total: this.props.users.length
+                        }}
+                    />
+                );
+            }
         }
 
         return (
@@ -376,7 +470,7 @@ class FilteredUserList extends React.Component {
                     {
 
                     }
-                    <div className={`tab-content ${this.state.tabClicked === false ? 'hide-tag' : ''}`}>
+                    <div className={`tab-content invite-checkox-section ${this.state.tabClicked === false ? 'hide-tag' : ''}`}>
                         <div id='recently_added'
                             className='tab-pane fade'
                         >
@@ -468,13 +562,8 @@ class FilteredUserList extends React.Component {
                                 <div>
                                     {
                                         this.recently_invited_arr.filter((user) => {
-                                            // console.log('this.state.searchMembers',this.state.searchMembers);
-                                            const regex = new RegExp('dd@tt.ll' , 'gi');
-                                            console.log('regex',regex);
-                                            console.log('user.email',user);
-                                            console.log('regex2', user.email.match(/dd/g));
-
-                                            return this.state.searchMembers ? (user.email.match(regex)) : user;
+                                            const regex = new RegExp(this.state.filter, 'gi');
+                                            return this.state.filter ? (user.email.match(regex)) : user;
                                         }).map((obj, index) => {
                                             return (
                                                 <div className='col-md-4 col-xs-4 selectable'
