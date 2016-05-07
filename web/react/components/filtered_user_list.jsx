@@ -450,22 +450,38 @@ class FilteredUserList extends React.Component {
                 <div>
                     {this.props.context === 'inviteMember' ?
                         <ul className='team-nav nav nav-tabs'>
-                            <li className='pill-list'>
+                            <li>
                                 <a data-toggle='tab'
                                     href='#recently_added'
                                     onClick={this.pillClicked.bind(this, 'added')}
-                                >Recently Added</a></li>
-                            <li className='pill-list'>
+                                >
+                                    <FormattedMessage
+                                        id='filtered_user_list.added'
+                                        defaultMessage='Recently Added'
+                                    />
+                                </a>
+                            </li>
+                            <li>
                                 <a data-toggle='tab'
                                     href='#recently_invited'
                                     onClick={this.pillClicked.bind(this, 'invited')}
-                                >Recently Invited</a>
+                                >
+                                    <FormattedMessage
+                                        id='filtered_user_list.invited'
+                                        defaultMessage='Recently Invited'
+                                    />
+                                </a>
                             </li>
-                            <li className='pill-list'>
+                            <li>
                                 <a data-toggle='tab'
                                     href='#get_link'
                                     onClick={this.pillClicked.bind(this, 'link')}
-                                >Get Link</a>
+                                >
+                                    <FormattedMessage
+                                        id='filtered_user_list.getLink'
+                                        defaultMessage='Get Link'
+                                    />
+                                </a>
                             </li>
                         </ul> : null
                     }
@@ -485,7 +501,12 @@ class FilteredUserList extends React.Component {
                                     value='all_added'
                                     id='all_added'
                                 />
-                                <label htmlFor='all_added'>Select All</label>
+                                <label htmlFor='all_added'>
+                                    <FormattedMessage
+                                        id='filtered_user_list.selectAdded'
+                                        defaultMessage='Select All'
+                                    />
+                                </label>
                                 <br/>
                                 <button
                                     type='button'
@@ -543,7 +564,7 @@ class FilteredUserList extends React.Component {
                                     className='btn btn-primary multiple-invited'
                                 >
                                     <FormattedMessage
-                                        id='filtered_user_list.send'
+                                        id='filtered_user_list.selectInvited'
                                         defaultMessage='Send'
                                     />
                                 </button>
@@ -557,7 +578,12 @@ class FilteredUserList extends React.Component {
                                 value='all_users'
                                 id='all-invited'
                             />
-                            <label htmlFor='all-invited'>Select All</label>
+                            <label htmlFor='all-invited'>
+                                <FormattedMessage
+                                    id='filtered_user_list.selectInvited'
+                                    defaultMessage='Select All'
+                                />
+                            </label>
                         </div>
 
                             {this.recently_invited_arr && this.recently_invited_arr.length ?

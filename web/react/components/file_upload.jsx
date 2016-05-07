@@ -5,8 +5,8 @@ import * as Client from '../utils/client.jsx';
 import Constants from '../utils/constants.jsx';
 import ChannelStore from '../stores/channel_store.jsx';
 import * as Utils from '../utils/utils.jsx';
-import filepicker from 'filepicker-js';
-filepicker.setKey('A1jBeZwwiQvqb7X20ka21z');
+// import filepicker from 'filepicker-js';
+// filepicker.setKey('A1jBeZwwiQvqb7X20ka21z');
 
 import {intlShape, injectIntl, defineMessages} from 'mm-intl';
 
@@ -306,19 +306,17 @@ class FileUpload extends React.Component {
                 ref='input'
                 className='btn btn-file'
             >
-
                 <span>
                     <i className='glyphicon glyphicon-paperclip'/>
                 </span>
-                    {
-
-                    //  <input
-                    //      ref='fileInput'
-                    //      type='button'
-                    //      onClick={this.fileUpload.bind(this)}
-                    // />
-                    }
-
+                <input
+                    ref='fileInput'
+                    type='file'
+                    onChange={this.handleChange}
+                    onClick={this.props.onClick}
+                    multiple={multiple}
+                    accept={accept}
+                />
             </span>
         );
     }
