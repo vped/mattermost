@@ -291,6 +291,7 @@ export default class ChannelInviteModal extends React.Component {
                     showInitialState={this.state.showCancelButton}
                     showCopyLink={this.showCopyLink}
                     hideCopyLink={this.hideCopyLink}
+                    context='inviteMember'
                 />
             );
         }

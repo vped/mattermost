@@ -448,25 +448,27 @@ class FilteredUserList extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <ul className='team-nav nav nav-tabs'>
-                        <li className='pill-list'>
-                            <a data-toggle='tab'
-                                href='#recently_added'
-                                onClick={this.pillClicked.bind(this, 'added')}
-                            >Recently Added</a></li>
-                        <li className='pill-list'>
-                            <a data-toggle='tab'
-                                href='#recently_invited'
-                                onClick={this.pillClicked.bind(this, 'invited')}
-                            >Recently Invited</a>
-                        </li>
-                        <li className='pill-list'>
-                            <a data-toggle='tab'
-                                href='#get_link'
-                                onClick={this.pillClicked.bind(this, 'link')}
-                            >Get Link</a>
-                        </li>
-                    </ul>
+                    {this.props.context === 'inviteMember' ?
+                        <ul className='team-nav nav nav-tabs'>
+                            <li className='pill-list'>
+                                <a data-toggle='tab'
+                                    href='#recently_added'
+                                    onClick={this.pillClicked.bind(this, 'added')}
+                                >Recently Added</a></li>
+                            <li className='pill-list'>
+                                <a data-toggle='tab'
+                                    href='#recently_invited'
+                                    onClick={this.pillClicked.bind(this, 'invited')}
+                                >Recently Invited</a>
+                            </li>
+                            <li className='pill-list'>
+                                <a data-toggle='tab'
+                                    href='#get_link'
+                                    onClick={this.pillClicked.bind(this, 'link')}
+                                >Get Link</a>
+                            </li>
+                        </ul> : null
+                    }
                     {
 
                     }
@@ -628,9 +630,10 @@ FilteredUserList.propTypes = {
     users: React.PropTypes.arrayOf(React.PropTypes.object),
     actions: React.PropTypes.arrayOf(React.PropTypes.func),
     style: React.PropTypes.object,
-    showCopyLink: React.PropTypes.func.isRequired,
-    hideCopyLink: React.PropTypes.func.isRequired,
-    showCancel: React.PropTypes.func.isRequired
+    showCopyLink: React.PropTypes.func,
+    hideCopyLink: React.PropTypes.func,
+    context: React.PropTypes.string,
+    showCancel: React.PropTypes.func
 };
 
 export default injectIntl(FilteredUserList);
