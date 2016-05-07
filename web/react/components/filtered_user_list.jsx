@@ -490,12 +490,12 @@ class FilteredUserList extends React.Component {
                                     className='recently_added_btn btn btn-primary'
                                     onClick={this.inviteAddedMember.bind(this)}
                                 >
-                                <FormattedMessage
-                                    id='filtered_user_list.add'
-                                    defaultMessage='Add'
-                                />
+                                    <FormattedMessage
+                                        id='filtered_user_list.add'
+                                        defaultMessage='Add'
+                                    />
                                 </button>
-                             </div>
+                            </div>
                             <br/>
                             {this.recently_added_arr && this.recently_added_arr.length ?
                                 <div>

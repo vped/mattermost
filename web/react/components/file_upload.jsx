@@ -59,7 +59,6 @@ class FileUpload extends React.Component {
 
     uploadFiles(files) {
         // clear any existing errors
-        console.log(files);
         this.props.onUploadError(null);
 
         var channelId = this.props.channelId || ChannelStore.getCurrentId();
@@ -68,78 +67,55 @@ class FileUpload extends React.Component {
         var numUploads = 0;
 
         // keep track of how many files have been too large
-        // var tooLargeFiles = [];
+        var tooLargeFiles = [];
 
-        const clientId = Utils.generateId();
+        for (let i = 0; i < files.length && numUploads < uploadsRemaining; i++) {
+            if (files[i].size > Constants.MAX_FILE_SIZE) {
+                tooLargeFiles.push(files[i]);
+                continue;
+            }
 
-        // prepare data to be uploaded
-        var formData = new FormData();
-        formData.append('channel_id', channelId);
-        formData.append('files', files, files.filename);
-        formData.append('client_ids', clientId);
-        console.log(formData,'formData');
+            // generate a unique id that can be used by other components to refer back to this upload
+            const clientId = Utils.generateId();
 
-        var request = Client.uploadFile(formData,
-            this.fileUploadSuccess.bind(this, channelId),
-            this.fileUploadFail.bind(this, clientId)
-        );
+            // prepare data to be uploaded
+            var formData = new FormData();
+            formData.append('channel_id', channelId);
+            formData.append('files', files[i], files[i].name);
+            formData.append('client_ids', clientId);
 
-        var requests = this.state.requests;
-        requests[clientId] = request;
-        this.setState({requests});
+            var request = Client.uploadFile(formData,
+                this.fileUploadSuccess.bind(this, channelId),
+                this.fileUploadFail.bind(this, clientId)
+            );
 
-        this.props.onUploadStart([clientId], channelId);
+            var requests = this.state.requests;
+            requests[clientId] = request;
+            this.setState({requests});
 
-        numUploads += 1;
+            this.props.onUploadStart([clientId], channelId);
 
-        // for (let i = 0; i < files.length && numUploads < uploadsRemaining; i++) {
-        //     if (files[i].size > Constants.MAX_FILE_SIZE) {
-        //         tooLargeFiles.push(files[i]);
-        //         continue;
-        //     }
-        //
-        //     // generate a unique id that can be used by other components to refer back to this upload
-        //     const clientId = Utils.generateId();
-        //
-        //     // prepare data to be uploaded
-        //     var formData = new FormData();
-        //     formData.append('channel_id', channelId);
-        //     formData.append('files', files[i], files[i].name);
-        //     formData.append('client_ids', clientId);
-        //
-        //     var request = Client.uploadFile(formData,
-        //         this.fileUploadSuccess.bind(this, channelId),
-        //         this.fileUploadFail.bind(this, clientId)
-        //     );
-        //
-        //     var requests = this.state.requests;
-        //     requests[clientId] = request;
-        //     this.setState({requests});
-        //
-        //     this.props.onUploadStart([clientId], channelId);
-        //
-        //     numUploads += 1;
-        // }
+            numUploads += 1;
+        }
 
         const {formatMessage} = this.props.intl;
-        // if (files.length > uploadsRemaining) {
-        //     this.props.onUploadError(formatMessage(holders.limited, {count: Constants.MAX_UPLOAD_FILES}));
-        // } else if (tooLargeFiles.length > 1) {
-        //     var tooLargeFilenames = tooLargeFiles.map((file) => file.name).join(', ');
-        //
-        //     this.props.onUploadError(formatMessage(holders.filesAbove, {max: (Constants.MAX_FILE_SIZE / 1000000), filenames: tooLargeFilenames}));
-        // } else if (tooLargeFiles.length > 0) {
-        //     this.props.onUploadError(formatMessage(holders.fileAbove, {max: (Constants.MAX_FILE_SIZE / 1000000), filename: tooLargeFiles[0].name}));
-        // }
+        if (files.length > uploadsRemaining) {
+            this.props.onUploadError(formatMessage(holders.limited, {count: Constants.MAX_UPLOAD_FILES}));
+        } else if (tooLargeFiles.length > 1) {
+            var tooLargeFilenames = tooLargeFiles.map((file) => file.name).join(', ');
+
+            this.props.onUploadError(formatMessage(holders.filesAbove, {max: (Constants.MAX_FILE_SIZE / 1000000), filenames: tooLargeFilenames}));
+        } else if (tooLargeFiles.length > 0) {
+            this.props.onUploadError(formatMessage(holders.fileAbove, {max: (Constants.MAX_FILE_SIZE / 1000000), filename: tooLargeFiles[0].name}));
+        }
     }
 
     handleChange(e) {
-        // if (e.target.files.length > 0) {
-        //     this.uploadFiles(e.target.files);
-        //
-        //     Utils.clearFileInput(e.target);
-        // }
-        this.uploadFiles(e);
+        if (e.target.files.length > 0) {
+            this.uploadFiles(e.target.files);
+
+            Utils.clearFileInput(e.target);
+        }
     }
 
     handleDrop(e) {
@@ -150,15 +126,6 @@ class FileUpload extends React.Component {
         if (typeof files !== 'string' && files.length) {
             this.uploadFiles(files);
         }
-    }
-
-    fileUpload() {
-        filepicker.pick(
-            (Blob) => {
-                console.log(Blob);
-                this.handleChange(Blob);
-            }
-        );
     }
 
     componentDidMount() {
@@ -343,32 +310,13 @@ class FileUpload extends React.Component {
                 <span>
                     <i className='glyphicon glyphicon-paperclip'/>
                 </span>
-                {
-
-                    // <input
-                    //     ref='fileInput'
-                    //     type='file'
-                    //     onChange={this.handleChange}
-                    //     onClick={this.props.onClick}
-                    //     multiple={multiple}
-                    //     accept={accept}
-                    // />
-                }
-                {
-                    // <input
-                    //     ref='fileInput'
-                    //     type='filepicker'
-                    //     data-fp-apikey='AFVo1uXG1RRaFw5yZWAlVz'
-                    //     onClick={this.fileUpload.bind(this)}
-                    // />
-                }
-
                     {
-                     <input
-                         ref='fileInput'
-                         type='button'
-                         onClick={this.fileUpload.bind(this)}
-                    />
+
+                    //  <input
+                    //      ref='fileInput'
+                    //      type='button'
+                    //      onClick={this.fileUpload.bind(this)}
+                    // />
                     }
 
             </span>
