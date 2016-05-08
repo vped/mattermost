@@ -319,6 +319,7 @@ export default class ChannelInviteModal extends React.Component {
                     </Modal.Body>
                     <Modal.Footer>
                         {copyLink}
+                        {copyLinkConfirm}
                         {
                             this.state.showCancelButton ?
                                 <button

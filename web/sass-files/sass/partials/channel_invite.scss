@@ -4,11 +4,13 @@
 #recently_invited_email {
   width: 80%;
 }
-#recently_invited,#get_link,#recently_added {
+#recently_invited,
+#get_link,#recently_added {
   margin: 15px;
 }
 
-.hide-tag,.hide-checkbox{
+.hide-tag,
+.hide-checkbox{
   display: none;
 }
 
@@ -16,7 +18,8 @@
   float: right;
 }
 
-#recently_invited_email,.multiple-invited {
+#recently_invited_email,
+.multiple-invited {
   display: inline-block;
   margin-bottom: 20px;
 }
@@ -27,12 +30,14 @@
   margin-left: 20px;
 }
 
-.nav-tabs >.active >a, .nav-tabs >li >a{
-  margin-right: 10px;
+.nav-tabs >.active >a,
+.nav-tabs >li >a{
   border: 0px !important;
+  margin-left: 3px;
 }
-.nav-tabs >.active >a{
-border-bottom: 2px solid #2389d7 !important;
+.nav-tabs >.active >a {
+	border-bottom: 2px solid #2389d7 !important;
+
 }
 
 .nav-tabs {
@@ -131,5 +136,3 @@ border-bottom: 2px solid #2389d7 !important;
 label:hover:before {
   border: 1px solid #4778d9!important;
 }
-
-

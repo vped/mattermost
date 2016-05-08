@@ -450,18 +450,12 @@ class FilteredUserList extends React.Component {
                 <div>
                     {this.props.context === 'inviteMember' ?
                         <ul className='team-nav nav nav-tabs'>
-                            <li>
+                            <li className='pill-list'>
                                 <a data-toggle='tab'
                                     href='#recently_added'
                                     onClick={this.pillClicked.bind(this, 'added')}
-                                >
-                                    <FormattedMessage
-                                        id='filtered_user_list.added'
-                                        defaultMessage='Recently Added'
-                                    />
-                                </a>
-                            </li>
-                            <li>
+                                >Recently Added</a></li>
+                            <li className='pill-list'>
                                 <a data-toggle='tab'
                                     href='#recently_invited'
                                     onClick={this.pillClicked.bind(this, 'invited')}
@@ -472,7 +466,7 @@ class FilteredUserList extends React.Component {
                                     />
                                 </a>
                             </li>
-                            <li>
+                            <li className='pill-list'>
                                 <a data-toggle='tab'
                                     href='#get_link'
                                     onClick={this.pillClicked.bind(this, 'link')}
@@ -624,7 +618,7 @@ class FilteredUserList extends React.Component {
                                 className='form-control no-resize min-height'
                                 readOnly='true'
                                 ref='textarea'
-                                value='qwerty'
+                                value='http://localhost:8065/signup_user_complete/?id=m9dxymp9fpgtigw81gt7j5mq5o'
                             />
                         </div>
                     </div>
