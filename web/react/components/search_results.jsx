@@ -161,6 +161,7 @@ export default class SearchResults extends React.Component {
                 return (
                     <SearchResultsItem
                         key={post.id}
+                        total={results}
                         channel={this.state.channels.get(post.channel_id)}
                         post={post}
                         user={profile}
@@ -175,7 +176,10 @@ export default class SearchResults extends React.Component {
             <div className='sidebar--right__content'>
                 <div className='search-bar__container sidebar--right__search-header'>{searchForm}</div>
                 <div className='sidebar-right__body'>
-                    <SearchResultsHeader isMentionSearch={this.props.isMentionSearch}/>
+                    <SearchResultsHeader
+                        isMentionSearch={this.props.isMentionSearch}
+                        messages={results.order && results.order.length}
+                    />
                     <div
                         id='search-items-container'
                         className='search-items-container'

@@ -101,6 +101,16 @@ class FilteredUserList extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        //removing tooltip binding
+        if ($('.invited-label', ReactDOM.findDOMNode(this)).data('ui-tooltip')) {
+            $('.invited-label', ReactDOM.findDOMNode(this)).tooltip('destroy');
+        }
+        if ($('.added-label', ReactDOM.findDOMNode(this)).data('ui-tooltip')) {
+            $('.added-label', ReactDOM.findDOMNode(this)).tooltip('destroy');
+        }
+    }
+
     //to hide and show respective footer button
     pillClicked(component) {
         if (component === 'added') {
@@ -238,7 +248,7 @@ class FilteredUserList extends React.Component {
         });
     }
 
-    //Api call for sending selected recently added member
+    //Api call for sending selected recently added member... Pending
     inviteAddedMember() {
         const data = {invites: []};
         this.addedList.forEach((mail) => {
@@ -314,19 +324,18 @@ class FilteredUserList extends React.Component {
         const {formatMessage} = this.props.intl;
         let users = this.props.users;
         if (this.state.filter) {
-            const filter = this.state.filter.toLowerCase();
-
+            const filter = this.state.filter;
+            // Older Filter method is replaced with regex way
             users = users.filter((user) => {
-                return user.username.toLowerCase().indexOf(filter) !== -1 ||
-                    (user.first_name && user.first_name.toLowerCase().indexOf(filter) !== -1) ||
-                    (user.last_name && user.last_name.toLowerCase().indexOf(filter) !== -1) ||
-                    (user.nickname && user.nickname.toLowerCase().indexOf(filter) !== -1);
+                const regex = new RegExp(filter, 'gi');
+                return user.username && user.username.match(regex) || user.last_name && user.last_name.match(regex) ||
+                user.first_name && user.first_name.match(regex) || user.nickname && user.nickname.match(regex) || user.email && user.email.match(regex);
             });
         }
 
         let count;
 
-        //For tab section
+        //Filter for tab section
         if (this.state.tabClicked) {
             if (this.state.invitedSection) {
                 const invited = this.recently_invited_arr.filter((user) => {
@@ -397,7 +406,7 @@ class FilteredUserList extends React.Component {
                 }
             }
         } else {
-            //user section
+            //Filter for added user section
             const len = users.length;
             if (len === this.props.users.length) {
                 count = (
@@ -558,7 +567,7 @@ class FilteredUserList extends React.Component {
                                     className='btn btn-primary multiple-invited'
                                 >
                                     <FormattedMessage
-                                        id='filtered_user_list.selectInvited'
+                                        id='filtered_user_list.send'
                                         defaultMessage='Send'
                                     />
                                 </button>

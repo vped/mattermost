@@ -167,7 +167,7 @@ export default class ChannelInviteModal extends React.Component {
         }
     }
 
-    //copy channel invite link
+    //To show copy channel invite link
     showCopyLink() {
         if (!this.state.showCopyButton) {
             this.setState({
@@ -176,6 +176,7 @@ export default class ChannelInviteModal extends React.Component {
         }
     }
 
+    // //To hide copy channel invite link
     hideCopyLink() {
         if (this.state.showCopyButton) {
             this.setState({
@@ -184,6 +185,7 @@ export default class ChannelInviteModal extends React.Component {
         }
     }
 
+    // //To hide cancel button from model footer
     hideCancelButton() {
         this.setState({
             showCopyButton: false,
@@ -205,6 +207,7 @@ export default class ChannelInviteModal extends React.Component {
         }
     }
 
+    // //To  copy channel invite link
     copyLink() {
         this.props.onHide();
         var copyTextarea = $(ReactDOM.findDOMNode(this.refs.textarea));
