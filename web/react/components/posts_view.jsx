@@ -488,6 +488,23 @@ export default class PostsView extends React.Component {
             topPost = this.props.postList.posts[this.state.topPostId];
         }
 
+        var link = $('.markdown__link');
+        $(link).embedly({
+            key: '09c1bbdff81442be9561bf05a4892634',
+            query: {
+                maxwidth: 250
+            }
+        });
+
+        // var urls = [
+        //    'https://www.instagram.com/p/TwWnNSIXRo/'
+        // ].map(encodeURIComponent).join(',');
+        //
+        // $.getJSON('https://api.embedly.com/1/oembed?key=09c1bbdff81442be9561bf05a4892634&urls='+urls)
+        //     .then(function(results){
+        //         // console.log(results)
+        //     $('.markdown__imgtitle').val('https://www.instagram.com/p/TwWnNSIXRo');
+        //     })
         return (
             <div className={activeClass}>
                 <FloatingTimestamp

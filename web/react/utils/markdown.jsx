@@ -164,7 +164,8 @@ class MattermostMarkdownRenderer extends marked.Renderer {
     }
 
     image(href, title, text) {
-        let out = '<img src="' + href + '" alt="' + text + '"';
+        // let hrefs = '<input type="text" class="theme markdown__imgtitle" href="/>'
+        let out = '<img class="theme markdown__link" src="' + href + '" alt="' + text + '"';
         if (title) {
             out += ' title="' + title + '"';
         }

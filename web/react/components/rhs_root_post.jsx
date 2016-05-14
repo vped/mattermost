@@ -229,6 +229,13 @@ export default class RhsRootPost extends React.Component {
             />
         );
 
+        $('.markdown__link').embedly({
+            key: '133f65db1cfb48acb3a08afa1db086f3',
+            query: {
+                maxwidth: 250
+            }
+        });
+
         return (
             <div className={'post post--root ' + userCss + ' ' + systemMessageClass}>
                 <div className='post-right-channel__name'>{channelName}</div>
