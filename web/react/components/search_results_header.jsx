@@ -72,7 +72,7 @@ export default class SearchResultsHeader extends React.Component {
                         <li>
                             <a data-toggle='pill'
                                 href='#message'
-                            >Messages(2)
+                            >Messages({this.props.messages || 0})
                             </a>
                         </li>
                         <li>
